@@ -30,6 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private $service;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +123,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getService(): ?string
+    {
+        return $this->service;
+    }
+
+    public function setService(?string $service): self
+    {
+        $this->service = $service;
 
         return $this;
     }
