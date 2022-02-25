@@ -34,8 +34,13 @@
                 },
                 events: {{ data|raw }},
 
-                editable: true,
-                eventResizableFromStart: true
+                {#eventClick: function(info) {#}
+                {#    alert('http://localhost:8000/calendar/' + {{ calendar|id }} + '/edit');#}
+                {#}#}
+
+
+
+                    // url: 'http://localhost:3000/calendar/' + event.id + '/edit'
             });
 
 

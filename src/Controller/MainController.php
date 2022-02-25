@@ -14,8 +14,6 @@ class MainController extends AbstractController
     {
         $events = $calendar->findAll();
 
-//      dd($events);
-
         $planning = [];
         foreach($events as $event){
             $planning[] = [
