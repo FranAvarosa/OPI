@@ -5,7 +5,7 @@
 {% block stylesheets %}
     <style>
         #calendrier {
-            width: 70%;
+            width: 60%;
             margin: auto;
         }
     </style>
@@ -27,20 +27,27 @@
                 initialView: 'dayGridMonth',
                 locale: 'fr',
                 timeZone: 'Europe/Paris',
-                headerToolbar: {
-                    start: 'prev,next today',
-                    center: 'title',
-                    end: 'dayGridMonth,timeGridWeek'
-                },
-                events: {{ data|raw }},
 
-                {#eventClick: function(info) {#}
-                {#    alert('http://localhost:8000/calendar/' + {{ calendar|id }} + '/edit');#}
+                customButtons: {
+                    myCustomButton: {
+                        text: 'Ajouter un événement',
+                        click: function() {
+                        window.location.href = "{{ path('calendar_new') }}"
+                        }
+                    }
+                },
+
+                headerToolbar: {
+                    start: 'prev,next today dayGridMonth,timeGridWeek',
+                    center: 'title',
+                    end: 'myCustomButton'
+                },
+                events: {{ planning|json_encode|raw }},
+
+                {#eventClick: function(calEvent, jsEvent, view) {#}
+                {#    window.location.href = "{{ path('calendar_edit', {'id': planning.id}) }}";#}
                 {#}#}
 
-
-
-                    // url: 'http://localhost:3000/calendar/' + event.id + '/edit'
             });
 
 

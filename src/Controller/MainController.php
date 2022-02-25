@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CalendarRepository;
+use ContainerE4xO03e\getMaker_PhpCompatUtilService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,8 +30,8 @@ class MainController extends AbstractController
             ];
         }
 
-        $data =json_encode($planning);
-
-        return $this->render('main/index.html.twig', compact('data'));
+        return $this->render('main/index.html.twig', [
+            'planning' => $planning
+        ]);
     }
 }
