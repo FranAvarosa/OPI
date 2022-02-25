@@ -1,0 +1,41 @@
+header{
+    width: 100%;   
+}
+
+.header_top{
+    display: grid;
+    place-items: center;
+}
+
+.navbar{
+    display: block;
+    height: 2rem;
+    width: 100%;
+    background: rgb(49,82,137);
+    background: linear-gradient(0deg, rgba(49,82,137,1) 0%, rgba(49,82,137,1) 35%, rgba(75,123,191,1) 100%);
+    margin-bottom: 2%;
+}
+
+.loginform{
+    display: grid;
+    place-items: center;
+}
+
+.wrapper{
+    width: 20%;
+}
+
+.connexion{
+    margin-top: 1%;
+}
+
+.loggedcontainer{
+    display: grid;
+    place-items: center;
+}
+
+.loggedmessage{
+    font-weight: bold;
+    font-size: 2rem;
+    color: crimson;
+}
