@@ -33,9 +33,14 @@
                     end: 'dayGridMonth,timeGridWeek'
                 },
                 events: {{ data|raw }},
+
                 editable: true,
                 eventResizableFromStart: true
             });
+
+
+
+
 
             // draggable
             calendar.on('eventChange', (e) => {
