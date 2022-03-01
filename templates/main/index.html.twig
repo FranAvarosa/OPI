@@ -12,29 +12,36 @@
 {% endblock %}
 
 {% block body %}
-
-    {% block h1 %}
+    {% if is_granted('ROLE_USER') %}
         <div class="container-fluid">
             <div class="row justify-content-end text-center">
                 <div class="col-4">
                     <div class="h1">Bonjour {{ app.user.prenom }}</div>
                 </div>
                 <div class="col-4">
-                    {% if is_granted('ROLE_USER') %}<a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>{% endif %}
+                    <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
                 </div>
             </div>
         </div>
         <br />
-    {% endblock  %}
-
-
         <div id="calendrier">
         </div>
-
-
-
-
-
+    {%  else %}
+        {% block redirect %}
+            <div class="container-fluid">
+                <div class="row justify-content-center text-center">
+                    <div class="col-offset-4 col-4">
+                        <div class="h1">Merci de vous authentifier</div>
+                    </div>
+                </div>
+                <div class="row justify-content-center text-center">
+                    <div class="col-offset-4 col-4">
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">S'authentifier</a>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    {% endif %}
 {% endblock %}
 
 {% block javascripts %}
