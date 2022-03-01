@@ -1,0 +1,19 @@
+<div class="h1">Hello Admin</div>
+<div class="container-fluid">
+    <div class="row justify-content-end text-center">
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+            <div class="h1">Bonjour {{ app.user.prenom }} {{ app.user.nom }}</div>
+        </div>
+        <div class="col-4">
+            <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+            {% for lists in list %}
+                <a href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<br />
+<div id="calendrier">
+</div>
