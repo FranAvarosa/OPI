@@ -12,35 +12,75 @@
 {% endblock %}
 
 {% block body %}
-    {% if is_granted('ROLE_USER') %}
-        <div class="container-fluid">
-            <div class="row justify-content-end text-center">
-                <div class="col-4">
-                    <div class="h1">Bonjour {{ app.user.prenom }}</div>
-                </div>
-                <div class="col-4">
-                    <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
-                </div>
-            </div>
-        </div>
-        <br />
-        <div id="calendrier">
-        </div>
-    {%  else %}
-        {% block redirect %}
+{#    check if logged in#}
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+
+{#        check if is admin#}
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="h1">Hello Admin</div>
             <div class="container-fluid">
-                <div class="row justify-content-center text-center">
-                    <div class="col-offset-4 col-4">
-                        <div class="h1">Merci de vous authentifier</div>
+                <div class="row justify-content-end text-center">
+                    <div class="col-4">
+                        <div class="h1">Bonjour {{ app.user.prenom }}</div>
                     </div>
-                </div>
-                <div class="row justify-content-center text-center">
-                    <div class="col-offset-4 col-4">
-                        <a href="{{ path('app_login') }}" class="btn btn-primary">S'authentifier</a>
+                    <div class="col-4">
+                        <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
                     </div>
                 </div>
             </div>
-        {% endblock %}
+            <br />
+            <div id="calendrier">
+            </div>
+
+{#            check if is chef de service#}
+        {% elseif is_granted('ROLE_CHEFSERVICE') %}
+            <div class="h1">Hello Chef de service</div>
+            <div class="container-fluid">
+                <div class="row justify-content-end text-center">
+                    <div class="col-4">
+                        <div class="h1">Bonjour {{ app.user.prenom }}</div>
+                    </div>
+                    <div class="col-4">
+                        <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div id="calendrier">
+            </div>
+
+{#            check if is normal user#}
+        {% elseif is_granted('ROLE_USER') %}
+            <div class="h1">Hello user</div>
+            <div class="container-fluid">
+                <div class="row justify-content-end text-center">
+                    <div class="col-4">
+                        <div class="h1">Bonjour {{ app.user.prenom }}</div>
+                    </div>
+                    <div class="col-4">
+                        <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div id="calendrier">
+            </div>
+        {% endif %}
+
+{#        if not logged in#}
+    {%  else %}
+        <div class="container-fluid">
+            <div class="row justify-content-center text-center">
+                <div class="col-offset-4 col-4">
+                    <div class="h1">Merci de vous authentifier</div>
+                </div>
+            </div>
+            <div class="row justify-content-center text-center">
+                <div class="col-offset-4 col-4">
+                    <a href="{{ path('app_login') }}" class="btn btn-primary">S'authentifier</a>
+                </div>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}
 
@@ -74,10 +114,6 @@
                     window.location.href = "calendar/" + eventId + "/edit";
                 }
             });
-
-
-
-
 
             // draggable
             calendar.on('eventChange', (e) => {
