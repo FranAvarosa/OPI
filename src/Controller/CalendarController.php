@@ -15,14 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/calendar')]
 class CalendarController extends AbstractController
 {
-    #[Route('/', name: 'calendar_index', methods: ['GET'])]
-    public function index(CalendarRepository $calendarRepository): Response
-    {
-        return $this->render('calendar/index.html.twig', [
-            'calendars' => $calendarRepository->findAll(),
-        ]);
-    }
-
     #[Route('/new', name: 'calendar_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -61,7 +53,7 @@ class CalendarController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('calendar_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('calendar/edit.html.twig', [
@@ -78,6 +70,6 @@ class CalendarController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('calendar_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
     }
 }
