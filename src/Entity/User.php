@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,6 +34,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private $service;
+
+    #[ORM\OneToMany(mappedBy: 'User', targetEntity: Calendar::class)]
+    private $Calendar;
+
+    public function __construct()
+    {
+        $this->Calendar = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -135,6 +145,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setService(?string $service): self
     {
         $this->service = $service;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Calendar>
+     */
+    public function getCalendar(): Collection
+    {
+        return $this->Calendar;
+    }
+
+    public function addCalendar(Calendar $calendar): self
+    {
+        if (!$this->Calendar->contains($calendar)) {
+            $this->Calendar[] = $calendar;
+            $calendar->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCalendar(Calendar $calendar): self
+    {
+        if ($this->Calendar->removeElement($calendar)) {
+            // set the owning side to null (unless already changed)
+            if ($calendar->getUser() === $this) {
+                $calendar->setUser(null);
+            }
+        }
 
         return $this;
     }
