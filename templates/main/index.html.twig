@@ -13,11 +13,26 @@
 
 {% block body %}
 
-    {% block text %}Bonjour {{ app.user.prenom }}{% endblock  %}
-    {% if is_granted('ROLE_USER') %}<a href="{{ path('app_logout') }}">Déconnexion</a>{% endif %}
+    {% block h1 %}
+        <div class="container-fluid">
+            <div class="row justify-content-end text-center">
+                <div class="col-4">
+                    <div class="h1">Bonjour {{ app.user.prenom }}</div>
+                </div>
+                <div class="col-4">
+                    {% if is_granted('ROLE_USER') %}<a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>{% endif %}
+                </div>
+            </div>
+        </div>
+        <br />
+    {% endblock  %}
+
 
         <div id="calendrier">
         </div>
+
+
+
 
 
 {% endblock %}
