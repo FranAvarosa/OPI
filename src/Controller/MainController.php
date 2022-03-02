@@ -62,6 +62,7 @@ class MainController extends AbstractController
                     'borderColor' => $event->getBorderColor(),
                     'textColor' => $event->getTextColor(),
                     'allDay' => $event->getAllDay(),
+                    'date_diff' => $event->getDateDiff(),
                 ];
             }
 
