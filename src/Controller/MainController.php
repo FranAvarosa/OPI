@@ -67,7 +67,7 @@ class MainController extends AbstractController
             return $this->render('main/index.html.twig', [
                 'planning' => $planning,
                 'list' => $userRepository->findAll(),
-                'calId' => $id
+                'abc' => $id,
             ]);
         } else {
             return $this->render('security/login.html.twig');

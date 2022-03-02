@@ -5,8 +5,9 @@
         </div>
         <div class="col-4">
             <div class="h1">
+                Bonjour {{ app.user.prenom }} {{ app.user.nom }}
                 {% for lists in list %}
-                    {% if lists.id == calId %}
+                    {% if abc is defined and lists.id == abc %}
                         Planning de {{ lists.prenom }} {{ lists.nom }}
                     {% endif %}
                 {% endfor %}
