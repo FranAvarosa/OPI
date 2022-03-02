@@ -22,7 +22,7 @@
             {{ include('calendar/_chef.html.twig') }}
 
 {#            check if is normal user#}
-        {% elseif is_granted('ROLE_USER') %}
+        {% else %}
             {{ include('calendar/_user.html.twig') }}
         {% endif %}
     {%  else %}
