@@ -33,6 +33,7 @@ class MainController extends AbstractController
                 'borderColor' => $event->getBorderColor(),
                 'textColor' => $event->getTextColor(),
                 'allDay' => $event->getAllDay(),
+                'date_diff' => $event->getDateDiff(),
             ];
         }
 
@@ -67,7 +68,7 @@ class MainController extends AbstractController
             return $this->render('main/index.html.twig', [
                 'planning' => $planning,
                 'list' => $userRepository->findAll(),
-                'abc' => $id,
+                'calId' => $id,
             ]);
         } else {
             return $this->render('security/login.html.twig');

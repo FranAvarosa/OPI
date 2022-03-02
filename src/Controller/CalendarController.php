@@ -23,7 +23,13 @@ class CalendarController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $date1 = $calendar->getStart();
+            $date2 = $calendar->getEnd();
+            $diff = $date2->diff($date1);
+            $diffInHours = $diff->h;
+
             $calendar->setUser($this->getUser());
+            $calendar->setDateDiff($diffInHours);
             $entityManager->persist($calendar);
             $entityManager->flush();
 
@@ -51,6 +57,12 @@ class CalendarController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $date1 = $calendar->getStart();
+            $date2 = $calendar->getEnd();
+            $diff = $date2->diff($date1);
+            $diffInHours = $diff->h;
+
+            $calendar->setDateDiff($diffInHours);
             $entityManager->flush();
 
             return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
