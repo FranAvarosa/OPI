@@ -21,13 +21,27 @@
 <div class="container-fluid">
     <div class="row justify-content-end text-center">
         <div class="col-4">
-        </div>
-        <div class="col-4">
             <div class="h2">
                 Total des heures : {{ totalHour }}
             </div>
         </div>
         <div class="col-4">
+            <div class="h2">
+                {% for plannings in planning %}
+                    {% set currentMonth = 'now'|date('F') %}
+                    {% set dateTime = date(plannings.start) %}
+                    <span class="month">{{ dateTime | date('F') }}</span>
+                    {% if currentMonth == dateTime %}
+                        success
+                    {% endif %}
+                {% endfor %}
+                Total du mois : {{ totalHour }}
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="h2">
+                Total de la semaine : {{ totalHour }}
+            </div>
         </div>
     </div>
 </div>
