@@ -4,9 +4,16 @@
         <div class="col-4">
         </div>
         <div class="col-4">
-            <div class="h1">Bonjour {{ app.user.prenom }} {{ app.user.nom }}</div>
+            <div class="h1">
+                {% for lists in list %}
+                    {% if lists.id == calId %}
+                        Planning de {{ lists.prenom }} {{ lists.nom }}
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
         <div class="col-4">
+            <div class="loggedUser">"Vous êtes connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}"  </div>
             <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
             {% for lists in list %}
                 <a href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>

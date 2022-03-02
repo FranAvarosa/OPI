@@ -12,9 +12,7 @@
 {% endblock %}
 
 {% block body %}
-{#    check if logged in#}
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-
 {#        check if is admin#}
         {% if is_granted('ROLE_ADMIN') %}
             {{ include('calendar/_admin.html.twig') }}
@@ -27,8 +25,6 @@
         {% elseif is_granted('ROLE_USER') %}
             {{ include('calendar/_user.html.twig') }}
         {% endif %}
-
-{#        if not logged in#}
     {%  else %}
         <div class="container-fluid">
             <div class="row justify-content-center text-center">

@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Repository\CalendarRepository;
+use App\Repository\DefaultRepository;
 use App\Repository\UserRepository;
 use ContainerE4xO03e\getMaker_PhpCompatUtilService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\ValidatorService;
+use PDO;
 
 #[Route('/cal')]
 class MainController extends AbstractController
@@ -44,6 +47,7 @@ class MainController extends AbstractController
     {
         if($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $id = $_GET['id'];
+
             $events = $calendar->findBy(['User' => $id]);
             $planning = [];
             foreach($events as $event){
@@ -63,6 +67,7 @@ class MainController extends AbstractController
             return $this->render('main/index.html.twig', [
                 'planning' => $planning,
                 'list' => $userRepository->findAll(),
+                'calId' => $id
             ]);
         } else {
             return $this->render('security/login.html.twig');
