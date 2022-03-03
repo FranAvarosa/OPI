@@ -26,25 +26,25 @@
 <div id="calendrier">
 </div>
 <br />
-{% set totalHour = 0 %}
-{% for plannings in planning %}
-    {% set totalHour = totalHour + plannings.date_diff %}
-{% endfor %}
+{#{% set totalHour = 0 %}#}
+{#{% for plannings in planning %}#}
+{#    {% set totalHour = totalHour + plannings.date_diff %}#}
+{#{% endfor %}#}
 <div class="container-fluid">
     <div class="row justify-content-end text-center">
         <div class="col-4">
             <div class="h2">
-                Total des heures : {{ totalHour }}
+                Total de l'année : <span id="totalOfHoursInYear"></span>
             </div>
         </div>
         <div class="col-4">
             <div class="h2">
-                Total du mois : {{ totalHour }}
+                Total du mois : <span id="totalOfHoursInMonth"></span>
             </div>
         </div>
         <div class="col-4">
             <div class="h2">
-                Total de la semaine : {{ totalHour }}
+                Total de la semaine : <span id="totalOfHoursInWeek"></span>
             </div>
         </div>
     </div>

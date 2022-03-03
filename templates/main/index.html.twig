@@ -35,6 +35,9 @@
 {% block javascripts %}
     <script>
         window.onload = () => {
+            let totalOfHoursInYearHolder = document.getElementById('totalOfHoursInYear');
+            let totalOfHoursInMonthHolder = document.getElementById('totalOfHoursInMonth');
+            let totalOfHoursInWeekHolder = document.getElementById('totalOfHoursInWeek');
             let calendarEvents = [];
             let calendarEl = document.querySelector("#calendrier");
             let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -63,14 +66,20 @@
                     window.location.href = "/calendar/" + eventId + "/edit";
                 },
 
-                eventDidMount: function(info) {
+                eventContent: function(info) {
                     let durations = [];
                     let currentDate = moment();
-                    let weekStart = currentDate.clone().startOf('isoweek');
-                    let hourInCurrentWeek = 0;
 
-                    console.log(info.event);
-                    calendarEvents.push(info.event);
+                    let weekStart = currentDate.clone().startOf('isoweek');
+                    let monthStart = moment().startOf('month');
+                    let yearStart = currentDate.startOf('year').format();
+                    let yearEnd = currentDate.endOf('year').format();
+
+                    let hourInCurrentWeek = 0;
+                    let hourInCurrentMonth = 0;
+                    let hourInCurrentYear = 0;
+
+                    calendarEvents = calendar.getEvents();
                     for(let event of calendarEvents){
                         let endDate = moment(event._instance.range.end);
                         let startDate = moment(event._instance.range.start);
@@ -80,19 +89,66 @@
                         duration[startDate.format('YYYY-MM-DD')] = mins;
                         durations.push(duration);
                     }
-                    for (let i = 0; i <= 6; i++) {
-                        for (let duration of durations) {
-                            let daysHours = duration[moment(weekStart).add(i, 'days').format("YYYY-MM-DD")];
-                            if(daysHours !== undefined){
-                                hourInCurrentWeek += duration[moment(weekStart).add(i, 'days').format("YYYY-MM-DD")]
-                            }
-                        }
-                    }
-                    console.log(hourInCurrentWeek);
+
+                    hourInCurrentWeek = parseFloat((getHourInCurrentWeek(durations, weekStart) / 60).toFixed(1));
+                    hourInCurrentMonth = parseFloat((getHourInCurrentMonth(durations, currentDate, monthStart) / 60).toFixed(1));
+                    hourInCurrentYear = parseFloat((getHourInCurrentYear(durations, yearStart, yearEnd) / 60).toFixed(1));
+
+                    totalOfHoursInYearHolder.innerHTML = hourInCurrentYear;
+                    totalOfHoursInMonthHolder.innerHTML = hourInCurrentMonth;
+                    totalOfHoursInWeekHolder.innerHTML = hourInCurrentWeek;
                 },
             });
 
+            function getHourInCurrentWeek(durations, weekStart) {
+                let hourInCurrentWeek = 0;
 
+                for (let i = 0; i <= 6; i++) {
+                    for (let duration of durations) {
+                        let daysHours = duration[moment(weekStart).add(i, 'days').format("YYYY-MM-DD")];
+
+                        if (daysHours !== undefined) {
+                            hourInCurrentWeek += daysHours;
+                        }
+                    }
+                }
+
+                return hourInCurrentWeek;
+            }
+
+            function getHourInCurrentMonth(durations, currentDate, monthStart) {
+                let hourInCurrentMonth = 0;
+                for (let i = 0; i <= currentDate.daysInMonth() - 1; i++) {
+                    for (let duration of durations) {
+                        let daysHours = duration[moment(monthStart).add(i, 'days').format("YYYY-MM-DD")];
+                        if (daysHours !== undefined) {
+                            hourInCurrentMonth += daysHours;
+                        }
+                    }
+                }
+
+                return hourInCurrentMonth;
+            }
+
+            function getHourInCurrentYear(durations, yearStart, yearEnd) {
+                let hourInCurrentYear = 0;
+                let indexOfTheDay = 0;
+                let dateOfEvents = [];
+
+                for (let i = moment(yearStart); i <= moment(yearEnd); i.add(1, 'days')) {
+                    for (let duration of durations) {
+                        let daysHours = duration[moment(yearStart).add(indexOfTheDay, 'days').format("YYYY-MM-DD")];
+
+                        if (daysHours !== undefined) {
+                            dateOfEvents.push(daysHours);
+                            hourInCurrentYear += daysHours;
+                        }
+                    }
+                    indexOfTheDay++;
+                }
+
+                return hourInCurrentYear;
+            }
 
             // // draggable
             // calendar.on('eventChange', (e) => {

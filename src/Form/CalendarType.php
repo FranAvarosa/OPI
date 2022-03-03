@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Calendar;
 use App\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -17,7 +18,7 @@ class CalendarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
+            ->add('title', null, array('label' => 'Titre'))
             ->add('start', DateTimeType::class, [
                 'date_widget' => 'single_text'
             ])
@@ -25,7 +26,13 @@ class CalendarType extends AbstractType
                 'date_widget' => 'single_text'
             ])
             ->add('description')
-            ->add('background_color', ColorType::class)
+            ->add('background_color', ChoiceType::class, [
+                'choices'  => [
+                    'En attente' => '#b7b7b7',
+                    'Travail de rue' => '#eac159',
+                    'Travail de nuit' => '#bf82dd',
+                ],
+            ])
         ;
     }
 

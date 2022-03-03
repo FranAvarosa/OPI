@@ -34,23 +34,6 @@ class MainController extends AbstractController
             ];
         }
 
-//        $date = date("m Y");
-//
-//        $currentMonth = date_parse_from_format("m Y", $date);
-//        $monthHours = $calendar->findBy(['start' => $currentMonth]);
-//        $monthArray = [];
-//        foreach ($monthHours as $monthHour){
-//            $monthArray[] = [
-//                'id' => $monthHour->getId(),
-//                'start' => $monthHour->getStart()->format('m Y'),
-//                'end' => $monthHour->getEnd()->format('Y-m-d H:i:s'),
-////                'title' => $monthHour->getTitle(),
-////                'description' => $monthHour->getDescription(),
-////                'backgroundColor' => $monthHour->getBackgroundColor(),
-//                'date_diff' => $monthHour->getDateDiff(),
-//            ];
-//        }
-
         return $this->render('main/index.html.twig', [
             'planning' => $planning,
             'list' => $userRepository->findAll()
