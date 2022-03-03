@@ -43,3 +43,8 @@ header{
 .fc-daygrid-event{
     cursor: pointer;
 }
+
+#calendrier {
+    width: 60%;
+    margin: auto;
+}

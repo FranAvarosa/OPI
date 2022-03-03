@@ -2,15 +2,6 @@
 
 {% block title %}Planning OPI{% endblock %}
 
-{% block stylesheets %}
-    <style>
-        #calendrier {
-            width: 60%;
-            margin: auto;
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 {#        check if is admin#}
@@ -44,6 +35,7 @@
 {% block javascripts %}
     <script>
         window.onload = () => {
+            let calendarEvents = [];
             let calendarEl = document.querySelector("#calendrier");
             let calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -54,7 +46,7 @@
                     myCustomButton: {
                         text: 'Ajouter un événement',
                         click: function() {
-                        window.location.href = "{{ path('calendar_new') }}"
+                            window.location.href = "{{ path('calendar_new') }}"
                         }
                     }
                 },
@@ -69,26 +61,56 @@
                 eventClick: function(event) {
                     let eventId = event.event._def.publicId;
                     window.location.href = "/calendar/" + eventId + "/edit";
-                }
+                },
+
+                eventDidMount: function(info) {
+                    let durations = [];
+                    let currentDate = moment();
+                    let weekStart = currentDate.clone().startOf('isoweek');
+                    let hourInCurrentWeek = 0;
+
+                    console.log(info.event);
+                    calendarEvents.push(info.event);
+                    for(let event of calendarEvents){
+                        let endDate = moment(event._instance.range.end);
+                        let startDate = moment(event._instance.range.start);
+                        let duration = moment.duration(endDate.diff(startDate));
+                        let mins = duration.asMinutes();
+
+                        duration[startDate.format('YYYY-MM-DD')] = mins;
+                        durations.push(duration);
+                    }
+                    for (let i = 0; i <= 6; i++) {
+                        for (let duration of durations) {
+                            let daysHours = duration[moment(weekStart).add(i, 'days').format("YYYY-MM-DD")];
+                            if(daysHours !== undefined){
+                                hourInCurrentWeek += duration[moment(weekStart).add(i, 'days').format("YYYY-MM-DD")]
+                            }
+                        }
+                    }
+                    console.log(hourInCurrentWeek);
+                },
             });
 
-            // draggable
-            calendar.on('eventChange', (e) => {
-                let url = `/api/${e.event.id}/edit`;
-                let donnees = {
-                    "title": e.event.title,
-                    "description": e.event.extendedProps.description,
-                    "start": e.event.start,
-                    "end": e.event.end,
-                    "backgroundColor": e.event.backgroundColor,
-                    "borderColor": e.event.borderColor,
-                    "textColor": e.event.textColor,
-                    "allDay": e.event.allDay
-                };
-                let xhr = new XMLHttpRequest;
-                xhr.open("PUT", url);
-                xhr.send(JSON.stringify(donnees));
-            });
+
+
+            // // draggable
+            // calendar.on('eventChange', (e) => {
+            //     let url = `/api/${e.event.id}/edit`;
+            //     let donnees = {
+            //         "title": e.event.title,
+            //         "description": e.event.extendedProps.description,
+            //         "start": e.event.start,
+            //         "end": e.event.end,
+            //         "backgroundColor": e.event.backgroundColor,
+            //         "borderColor": e.event.borderColor,
+            //         "textColor": e.event.textColor,
+            //         "allDay": e.event.allDay
+            //     };
+            //     let xhr = new XMLHttpRequest;
+            //     xhr.open("PUT", url);
+            //     xhr.send(JSON.stringify(donnees));
+            // });
 
             calendar.render();
         };
