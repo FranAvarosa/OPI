@@ -44,6 +44,7 @@
                 initialView: 'dayGridMonth',
                 locale: 'fr',
                 timeZone: 'Europe/Paris',
+                firstDay: 1,
 
                 customButtons: {
                     myCustomButton: {
@@ -66,37 +67,22 @@
                     window.location.href = "/calendar/" + eventId + "/edit";
                 },
 
+                eventWillUnmount: function(){
+                    let durations = [];
+                    let currentDate = moment(calendar.getDate());
+
+                    getCalendarEvents(durations);
+
+                    getNumberOfHours(currentDate, durations);
+                },
+
                 eventContent: function(info) {
                     let durations = [];
-                    let currentDate = moment();
+                    let currentDate = moment(calendar.getDate());
 
-                    let weekStart = currentDate.clone().startOf('isoweek');
-                    let monthStart = moment().startOf('month');
-                    let yearStart = currentDate.startOf('year').format();
-                    let yearEnd = currentDate.endOf('year').format();
+                    getCalendarEvents(durations);
 
-                    let hourInCurrentWeek = 0;
-                    let hourInCurrentMonth = 0;
-                    let hourInCurrentYear = 0;
-
-                    calendarEvents = calendar.getEvents();
-                    for(let event of calendarEvents){
-                        let endDate = moment(event._instance.range.end);
-                        let startDate = moment(event._instance.range.start);
-                        let duration = moment.duration(endDate.diff(startDate));
-                        let mins = duration.asMinutes();
-
-                        duration[startDate.format('YYYY-MM-DD')] = mins;
-                        durations.push(duration);
-                    }
-
-                    hourInCurrentWeek = parseFloat((getHourInCurrentWeek(durations, weekStart) / 60).toFixed(1));
-                    hourInCurrentMonth = parseFloat((getHourInCurrentMonth(durations, currentDate, monthStart) / 60).toFixed(1));
-                    hourInCurrentYear = parseFloat((getHourInCurrentYear(durations, yearStart, yearEnd) / 60).toFixed(1));
-
-                    totalOfHoursInYearHolder.innerHTML = hourInCurrentYear;
-                    totalOfHoursInMonthHolder.innerHTML = hourInCurrentMonth;
-                    totalOfHoursInWeekHolder.innerHTML = hourInCurrentWeek;
+                    getNumberOfHours(currentDate, durations);
                 },
             });
 
@@ -148,6 +134,48 @@
                 }
 
                 return hourInCurrentYear;
+            }
+
+            function getNumberOfHours(currentDate, durations) {
+                let weekStart = currentDate.clone().startOf('isoweek');
+                let monthStart = currentDate.startOf('month').format();
+                let yearStart = currentDate.startOf('year').format();
+                let yearEnd = currentDate.endOf('year').format();
+
+                let hourInCurrentWeek = 0;
+                let hourInCurrentMonth = 0;
+                let hourInCurrentYear = 0;
+
+                hourInCurrentWeek = parseFloat((getHourInCurrentWeek(durations, weekStart) / 60).toFixed(1));
+                hourInCurrentMonth = parseFloat((getHourInCurrentMonth(durations, currentDate, monthStart) / 60).toFixed(1));
+                hourInCurrentYear = parseFloat((getHourInCurrentYear(durations, yearStart, yearEnd) / 60).toFixed(1));
+
+                totalOfHoursInYearHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentYear;
+                totalOfHoursInMonthHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentMonth;
+                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentWeek;
+
+                if(calendar.view.type === 'dayGridMonth'){
+                    totalOfHoursInWeekHolder.style.display = 'none';
+                    totalOfHoursInMonthHolder.style.display = 'block';
+                } else {
+                    totalOfHoursInWeekHolder.style.display = 'block';
+                    totalOfHoursInMonthHolder.style.display = 'none';
+                }
+            }
+
+            function getCalendarEvents(durations){
+                calendarEvents = calendar.getEvents();
+                for(let event of calendarEvents){
+                    let endDate = moment(event._instance.range.end);
+                    let startDate = moment(event._instance.range.start);
+                    let duration = moment.duration(endDate.diff(startDate));
+                    let mins = duration.asMinutes();
+
+                    duration[startDate.format('YYYY-MM-DD')] = mins;
+                    durations.push(duration);
+                }
+
+                return durations;
             }
 
             // // draggable
