@@ -26,11 +26,18 @@ class CalendarType extends AbstractType
                 'date_widget' => 'single_text'
             ])
             ->add('description')
-            ->add('background_color', ChoiceType::class, [
+//            ->add('background_color', ChoiceType::class, [
+//                'choices'  => [
+//                    'En attente' => '#b7b7b7',
+//                    'Travail de rue' => '#eac159',
+//                    'Travail de nuit' => '#bf82dd'
+//                ],
+//            ])
+            ->add('category', ChoiceType::class, [
                 'choices'  => [
-                    'En attente' => '#b7b7b7',
-                    'Travail de rue' => '#eac159',
-                    'Travail de nuit' => '#bf82dd',
+                    'En attente' => 'En attente',
+                    'Travail de rue' => 'Travail de rue',
+                    'Travail de nuit' => 'Travail de nuit'
                 ],
             ])
         ;

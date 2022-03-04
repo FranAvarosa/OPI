@@ -34,6 +34,9 @@ class Calendar
     #[ORM\Column(type: 'integer')]
     private $date_diff;
 
+    #[ORM\Column(type: 'string', length: 100)]
+    private $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,6 +122,18 @@ class Calendar
     public function setDateDiff(int $date_diff): self
     {
         $this->date_diff = $date_diff;
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
+
         return $this;
     }
 }

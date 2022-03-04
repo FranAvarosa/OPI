@@ -18,6 +18,7 @@ class CalendarController extends AbstractController
     #[Route('/new', name: 'calendar_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+
         $calendar = new Calendar();
         $form = $this->createForm(CalendarType::class, $calendar);
         $form->handleRequest($request);
@@ -27,6 +28,21 @@ class CalendarController extends AbstractController
             $date2 = $calendar->getEnd();
             $diff = $date2->diff($date1);
             $diffInHours = $diff->h;
+
+            $category = $calendar->getCategory();
+            switch($category) {
+                case "En attente";
+                    $calendar->setBackgroundColor('#b7b7b7');
+                    break;
+                case "Travail de rue";
+                    $calendar->setBackgroundColor('#eac159');
+                    break;
+                case "Travail de nuit";
+                    $calendar->setBackgroundColor('#bf82dd');
+                    break;
+                default:
+                    $calendar->setBackgroundColor("#b7b7b7");
+            }
 
             $calendar->setUser($this->getUser());
             $calendar->setDateDiff($diffInHours);
@@ -61,6 +77,21 @@ class CalendarController extends AbstractController
             $date2 = $calendar->getEnd();
             $diff = $date2->diff($date1);
             $diffInHours = $diff->h;
+
+            $category = $calendar->getCategory();
+            switch($category) {
+                case "En attente";
+                    $calendar->setBackgroundColor('#b7b7b7');
+                    break;
+                case "Travail de rue";
+                    $calendar->setBackgroundColor('#eac159');
+                    break;
+                case "Travail de nuit";
+                    $calendar->setBackgroundColor('#bf82dd');
+                    break;
+                default:
+                    $calendar->setBackgroundColor("#b7b7b7");
+            }
 
             $calendar->setDateDiff($diffInHours);
             $entityManager->flush();
