@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,10 +21,11 @@ class CalendarType extends AbstractType
         $builder
             ->add('title', null, array('label' => 'Titre'))
             ->add('start', DateTimeType::class, [
-                'date_widget' => 'single_text'
+                'date_widget' => 'single_text',
+                'input' => 'datetime'
             ])
-            ->add('end', DateTimeType::class, [
-                'date_widget' => 'single_text'
+            ->add('end', TimeType::class, [
+                'input' => 'datetime'
             ])
             ->add('description')
 //            ->add('background_color', ChoiceType::class, [

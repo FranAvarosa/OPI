@@ -29,25 +29,37 @@ class CalendarController extends AbstractController
             $diff = $date2->diff($date1);
             $diffInHours = $diff->h;
 
-            $category = $calendar->getCategory();
-            switch($category) {
-                case "En attente";
-                    $calendar->setBackgroundColor('#b7b7b7');
-                    break;
-                case "Travail de rue";
-                    $calendar->setBackgroundColor('#eac159');
-                    break;
-                case "Travail de nuit";
-                    $calendar->setBackgroundColor('#bf82dd');
-                    break;
-                default:
-                    $calendar->setBackgroundColor("#b7b7b7");
+            $date1Ymd = $calendar->getStart()->format('Y-m-d');
+            $date2His = $calendar->getEnd()->format('H:i:s');
+            $dateString = $date1Ymd . ' ' . $date2His;
+            $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
+
+            if($dateEnd > $date1){
+                $category = $calendar->getCategory();
+                switch($category) {
+                    case "En attente";
+                        $calendar->setBackgroundColor('#b7b7b7');
+                        break;
+                    case "Travail de rue";
+                        $calendar->setBackgroundColor('#eac159');
+                        break;
+                    case "Travail de nuit";
+                        $calendar->setBackgroundColor('#bf82dd');
+                        break;
+                    default:
+                        $calendar->setBackgroundColor("#b7b7b7");
+                }
+
+                $calendar->setUser($this->getUser());
+                $calendar->setDateDiff($diffInHours);
+                $calendar->setEnd($dateEnd);
+                $entityManager->persist($calendar);
+                $entityManager->flush();
+            } else {
+                return $this->redirectToRoute('404', [], Response::HTTP_SEE_OTHER);
             }
 
-            $calendar->setUser($this->getUser());
-            $calendar->setDateDiff($diffInHours);
-            $entityManager->persist($calendar);
-            $entityManager->flush();
+
 
             return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
         }
@@ -78,23 +90,35 @@ class CalendarController extends AbstractController
             $diff = $date2->diff($date1);
             $diffInHours = $diff->h;
 
-            $category = $calendar->getCategory();
-            switch($category) {
-                case "En attente";
-                    $calendar->setBackgroundColor('#b7b7b7');
-                    break;
-                case "Travail de rue";
-                    $calendar->setBackgroundColor('#eac159');
-                    break;
-                case "Travail de nuit";
-                    $calendar->setBackgroundColor('#bf82dd');
-                    break;
-                default:
-                    $calendar->setBackgroundColor("#b7b7b7");
-            }
+            $date1Ymd = $calendar->getStart()->format('Y-m-d');
+            $date2His = $calendar->getEnd()->format('H:i:s');
+            $dateString = $date1Ymd . ' ' . $date2His;
+            $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
 
-            $calendar->setDateDiff($diffInHours);
-            $entityManager->flush();
+            if($dateEnd > $date1){
+                $category = $calendar->getCategory();
+                switch($category) {
+                    case "En attente";
+                        $calendar->setBackgroundColor('#b7b7b7');
+                        break;
+                    case "Travail de rue";
+                        $calendar->setBackgroundColor('#eac159');
+                        break;
+                    case "Travail de nuit";
+                        $calendar->setBackgroundColor('#bf82dd');
+                        break;
+                    default:
+                        $calendar->setBackgroundColor("#b7b7b7");
+                }
+
+                $calendar->setUser($this->getUser());
+                $calendar->setDateDiff($diffInHours);
+                $calendar->setEnd($dateEnd);
+                $entityManager->persist($calendar);
+                $entityManager->flush();
+            } else {
+                return $this->redirectToRoute('404', [], Response::HTTP_SEE_OTHER);
+            }
 
             return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
         }

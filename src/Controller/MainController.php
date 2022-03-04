@@ -30,6 +30,7 @@ class MainController extends AbstractController
                 'title' => $event->getTitle(),
                 'description' => $event->getDescription(),
                 'backgroundColor' => $event->getBackgroundColor(),
+                'category' => $event->getCategory(),
                 'date_diff' => $event->getDateDiff(),
             ];
         }
@@ -56,6 +57,7 @@ class MainController extends AbstractController
                     'title' => $event->getTitle(),
                     'description' => $event->getDescription(),
                     'backgroundColor' => $event->getBackgroundColor(),
+                    'category' => $event->getCategory(),
                     'date_diff' => $event->getDateDiff(),
                 ];
             }

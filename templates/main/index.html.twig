@@ -34,6 +34,14 @@
 
 {% block javascripts %}
     <script>
+        class CategoryData {
+            constructor(categoryName, numberOfHours, numberOfExtraHours) {
+                this.categoryName = categoryName;
+                this.numberOfHours = numberOfHours;
+                this.numberOfExtraHours = numberOfExtraHours;
+            }
+        }
+
         window.onload = () => {
             let totalOfHoursInYearHolder = document.getElementById('totalOfHoursInYear');
             let totalOfHoursInMonthHolder = document.getElementById('totalOfHoursInMonth');
@@ -43,7 +51,7 @@
             let calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'fr',
-                timeZone: 'Europe/Paris',
+                timeZone: 'local',
                 firstDay: 1,
 
                 customButtons: {
@@ -67,39 +75,50 @@
                     window.location.href = "/calendar/" + eventId + "/edit";
                 },
 
-                eventWillUnmount: function(){
-                    let durations = [];
-                    let currentDate = moment(calendar.getDate());
-
-                    getCalendarEvents(durations);
-
-                    getNumberOfHours(currentDate, durations);
-                },
-
-                eventContent: function(info) {
-                    let durations = [];
-                    let currentDate = moment(calendar.getDate());
-
-                    getCalendarEvents(durations);
-
-                    getNumberOfHours(currentDate, durations);
-                },
+                // eventWillUnmount: function(){
+                //     let durations = [];
+                //     let currentDate = moment(calendar.getDate());
+                //
+                //     getCalendarEvents(durations);
+                //
+                //     getNumberOfHours(currentDate, durations);
+                // },
+                //
+                // eventContent: function() {
+                //     let durations = [];
+                //     let currentDate = moment(calendar.getDate());
+                //
+                //     getCalendarEvents(durations);
+                //
+                //     getNumberOfHours(currentDate, durations);
+                // },
             });
 
             function getHourInCurrentWeek(durations, weekStart) {
-                let hourInCurrentWeek = 0;
+                let hoursInCurrentWeek = [];
 
                 for (let i = 0; i <= 6; i++) {
                     for (let duration of durations) {
                         let daysHours = duration[moment(weekStart).add(i, 'days').format("YYYY-MM-DD")];
+                        let extraHours = duration.extraTime;
 
                         if (daysHours !== undefined) {
-                            hourInCurrentWeek += daysHours;
+                            daysHours = (parseInt(daysHours) / 60);
+                            extraHours = (parseInt(extraHours) / 60);
+
+                            let category = hoursInCurrentWeek.filter(element => element.categoryName === duration.category);
+
+                            if (category.length > 0) {
+                                category[0].numberOfHours += daysHours;
+                                category[0].numberOfExtraHours += extraHours;
+                            } else {
+                                hoursInCurrentWeek.push(new CategoryData(duration.category, daysHours, extraHours))
+                            }
                         }
                     }
                 }
-
-                return hourInCurrentWeek;
+                console.log(hoursInCurrentWeek);
+                return hoursInCurrentWeek;
             }
 
             function getHourInCurrentMonth(durations, currentDate, monthStart) {
@@ -123,6 +142,7 @@
 
                 for (let i = moment(yearStart); i <= moment(yearEnd); i.add(1, 'days')) {
                     for (let duration of durations) {
+
                         let daysHours = duration[moment(yearStart).add(indexOfTheDay, 'days').format("YYYY-MM-DD")];
 
                         if (daysHours !== undefined) {
@@ -142,17 +162,32 @@
                 let yearStart = currentDate.startOf('year').format();
                 let yearEnd = currentDate.endOf('year').format();
 
-                let hourInCurrentWeek = 0;
-                let hourInCurrentMonth = 0;
-                let hourInCurrentYear = 0;
+                let hoursInCurrentWeek = getHourInCurrentWeek(durations, weekStart);
+                let hourInCurrentMonth = parseFloat((getHourInCurrentMonth(durations, currentDate, monthStart) / 60).toFixed(1));
+                let hourInCurrentYear = parseFloat((getHourInCurrentYear(durations, yearStart, yearEnd) / 60).toFixed(1));
 
-                hourInCurrentWeek = parseFloat((getHourInCurrentWeek(durations, weekStart) / 60).toFixed(1));
-                hourInCurrentMonth = parseFloat((getHourInCurrentMonth(durations, currentDate, monthStart) / 60).toFixed(1));
-                hourInCurrentYear = parseFloat((getHourInCurrentYear(durations, yearStart, yearEnd) / 60).toFixed(1));
+
+                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = '';
+                let totalOfHoursInWeek = 0;
+                for (let hourInCurrentWeek of hoursInCurrentWeek) {
+                    totalOfHoursInWeek += hourInCurrentWeek.numberOfHours;
+                    totalOfHoursInWeek += hourInCurrentWeek.numberOfExtraHours;
+                }
+
+                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = totalOfHoursInWeek;
+
+                for (let hourInCurrentWeek of hoursInCurrentWeek) {
+                    let newDiv = document.createElement("div");
+                    newDiv.innerHTML = '<div style="margin-bottom: 24px">' +
+                            '<h2>' + hourInCurrentWeek.categoryName + '</h2>' +
+                            '<div>hour spent : ' + hourInCurrentWeek.numberOfHours + '</div>' +
+                            '<div>extra hour spent : ' + hourInCurrentWeek.numberOfExtraHours + '</div></div>';
+
+                    totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].appendChild(newDiv);
+                }
 
                 totalOfHoursInYearHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentYear;
                 totalOfHoursInMonthHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentMonth;
-                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentWeek;
 
                 if(calendar.view.type === 'dayGridMonth'){
                     totalOfHoursInWeekHolder.style.display = 'none';
@@ -165,16 +200,55 @@
 
             function getCalendarEvents(durations){
                 calendarEvents = calendar.getEvents();
+                let opening = moment('06:00:00', "HH:mm:ss").format("HH:mm:ss");
+                let closing = moment('18:00:00', "HH:mm:ss").format("HH:mm:ss");
                 for(let event of calendarEvents){
+
                     let endDate = moment(event._instance.range.end);
                     let startDate = moment(event._instance.range.start);
                     let duration = moment.duration(endDate.diff(startDate));
                     let mins = duration.asMinutes();
 
-                    duration[startDate.format('YYYY-MM-DD')] = mins;
+                    duration.category = event._def.extendedProps.category;
+
+                    startHour = startDate.utc().format("HH:mm:ss");
+                    endHour = endDate.utc().format("HH:mm:ss");
+
+
+                    duration.extra = startDate.weekday() > 5 ||
+                        !(startHour >= opening && startHour < closing && endHour <= closing && endHour >= opening);
+
+                    if (duration.extra) {
+                        if (startDate.weekday() > 5) {
+                            duration.extraTime = mins;
+                            duration[startDate.format('YYYY-MM-DD')] = 0;
+                        } else if (startHour < opening && endHour < opening) {
+                            duration.extraTime = mins;
+                            duration[startDate.format('YYYY-MM-DD')] = 0;
+                        } else if (startHour > closing) {
+                            duration.extraTime = mins;
+                            duration[startDate.format('YYYY-MM-DD')] = 0;
+                        } else if (startHour < opening) {
+                            let openDate = startDate.utc().format('YYYY-MM-DD') + 'T06:00:00';
+                            let extraHour = moment.duration(moment(openDate).diff(moment(startDate.utc().format("YYYY-MM-DD HH:mm:ss"))));
+
+                            duration.extraTime = extraHour.asMinutes();
+                            duration[startDate.format('YYYY-MM-DD')] = mins - extraHour.asMinutes();
+                        } else if (endHour > closing) {
+                            let closeDate = startDate.utc().format('YYYY-MM-DD') + 'T18:00:00';
+                            let extraHour = moment.duration(moment(endDate.utc().format("YYYY-MM-DD HH:mm:ss")).diff(moment(closeDate)));
+
+                            duration.extraTime = extraHour.asMinutes();
+                            duration[startDate.format('YYYY-MM-DD')] = mins - extraHour.asMinutes();
+                        }
+                    } else {
+                        duration.extraTime = 0;
+                        duration[startDate.format('YYYY-MM-DD')] = mins;
+                    }
+
                     durations.push(duration);
                 }
-
+                console.log(durations);
                 return durations;
             }
 
@@ -196,7 +270,26 @@
             //     xhr.send(JSON.stringify(donnees));
             // });
 
+            function iniCalendarDate() {
+                let durations = [];
+                let currentDate = moment(calendar.getDate());
+
+                getCalendarEvents(durations);
+
+                getNumberOfHours(currentDate, durations);
+            }
+
+            function iniUserInput() {
+                for (let element of document.getElementById('calendrier').getElementsByTagName('button')) {
+                    element.addEventListener('click', function () {
+                        iniCalendarDate();
+                    })
+                }
+            }
+
             calendar.render();
+            iniCalendarDate();
+            iniUserInput();
         };
     </script>
 {% endblock %}
