@@ -1,0 +1,31 @@
+<div class="h1">Hello Chef de service</div>
+<div class="container-fluid">
+    <div class="row justify-content-end text-center">
+        <div class="col-4">
+            <div class="h1">Bonjour {{ app.user.prenom }} {{ app.user.nom }}</div>
+        </div>
+        <div class="col-4">
+            <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+        </div>
+    </div>
+</div>
+<br />
+<div id="calendrier">
+</div>
+{% set totalHour = 0 %}
+{% for plannings in planning %}
+    {% set totalHour = totalHour + plannings.date_diff %}
+{% endfor %}
+<div class="container-fluid">
+    <div class="row justify-content-end text-center">
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+            <div class="h2">
+                Total des heures : {{ totalHour }}
+            </div>
+        </div>
+        <div class="col-4">
+        </div>
+    </div>
+</div>

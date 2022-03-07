@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Calendar;
 use App\Form\CalendarType;
 use App\Repository\CalendarRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,24 +15,51 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/calendar')]
 class CalendarController extends AbstractController
 {
-    #[Route('/', name: 'calendar_index', methods: ['GET'])]
-    public function index(CalendarRepository $calendarRepository): Response
-    {
-        return $this->render('calendar/index.html.twig', [
-            'calendars' => $calendarRepository->findAll(),
-        ]);
-    }
-
     #[Route('/new', name: 'calendar_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+
         $calendar = new Calendar();
         $form = $this->createForm(CalendarType::class, $calendar);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($calendar);
-            $entityManager->flush();
+            $date1 = $calendar->getStart();
+            $date2 = $calendar->getEnd();
+            $diff = $date2->diff($date1);
+            $diffInHours = $diff->h;
+
+            $date1Ymd = $calendar->getStart()->format('Y-m-d');
+            $date2His = $calendar->getEnd()->format('H:i:s');
+            $dateString = $date1Ymd . ' ' . $date2His;
+            $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
+
+            if($dateEnd > $date1){
+                $category = $calendar->getCategory();
+                switch($category) {
+                    case "En attente";
+                        $calendar->setBackgroundColor('#b7b7b7');
+                        break;
+                    case "Travail de rue";
+                        $calendar->setBackgroundColor('#eac159');
+                        break;
+                    case "Travail de nuit";
+                        $calendar->setBackgroundColor('#bf82dd');
+                        break;
+                    default:
+                        $calendar->setBackgroundColor("#b7b7b7");
+                }
+
+                $calendar->setUser($this->getUser());
+                $calendar->setDateDiff($diffInHours);
+                $calendar->setEnd($dateEnd);
+                $entityManager->persist($calendar);
+                $entityManager->flush();
+            } else {
+                return $this->redirectToRoute('404', [], Response::HTTP_SEE_OTHER);
+            }
+
+
 
             return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
         }
@@ -57,9 +85,42 @@ class CalendarController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $date1 = $calendar->getStart();
+            $date2 = $calendar->getEnd();
+            $diff = $date2->diff($date1);
+            $diffInHours = $diff->h;
 
-            return $this->redirectToRoute('calendar_index', [], Response::HTTP_SEE_OTHER);
+            $date1Ymd = $calendar->getStart()->format('Y-m-d');
+            $date2His = $calendar->getEnd()->format('H:i:s');
+            $dateString = $date1Ymd . ' ' . $date2His;
+            $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
+
+            if($dateEnd > $date1){
+                $category = $calendar->getCategory();
+                switch($category) {
+                    case "En attente";
+                        $calendar->setBackgroundColor('#b7b7b7');
+                        break;
+                    case "Travail de rue";
+                        $calendar->setBackgroundColor('#eac159');
+                        break;
+                    case "Travail de nuit";
+                        $calendar->setBackgroundColor('#bf82dd');
+                        break;
+                    default:
+                        $calendar->setBackgroundColor("#b7b7b7");
+                }
+
+                $calendar->setUser($this->getUser());
+                $calendar->setDateDiff($diffInHours);
+                $calendar->setEnd($dateEnd);
+                $entityManager->persist($calendar);
+                $entityManager->flush();
+            } else {
+                return $this->redirectToRoute('404', [], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('calendar/edit.html.twig', [
@@ -76,6 +137,6 @@ class CalendarController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('calendar_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
     }
 }
