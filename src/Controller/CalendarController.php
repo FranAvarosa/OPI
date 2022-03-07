@@ -91,17 +91,47 @@ class CalendarController extends AbstractController
             if($dateEnd > $date1){
                 $category = $calendar->getCategory();
                 switch($category) {
-                    case "En attente";
-                        $calendar->setBackgroundColor('#b7b7b7');
+                    case "En attente":
+                        $calendar->setBackgroundColor('#CCCCFF');
                         break;
-                    case "Travail de rue";
-                        $calendar->setBackgroundColor('#eac159');
+                    case "Arrêt Maladie":
+                    case "Jour férié":
+                    case "CT":
+                    case "CA":
+                    case "Absence":
+                    case "Action Institution et partenariat":
+                    case "Présence sociale":
+                        $calendar->setBackgroundColor('#FFCCCC');
                         break;
-                    case "Travail de nuit";
-                        $calendar->setBackgroundColor('#bf82dd');
+                    case "DP":
+                        $calendar->setBackgroundColor('#FF9900');
+                        break;
+                    case "TA COMPT":
+                        $calendar->setBackgroundColor('#6666CC');
+                        break;
+                    case "AEP":
+                        $calendar->setBackgroundColor('#9999FF');
+                        break;
+                    case "Evaluation":
+                        $calendar->setBackgroundColor('#FF6666');
+                        break;
+                    case "Formation":
+                        $calendar->setBackgroundColor('#33CCFF');
+                        break;
+                    case "Coordination et préparation":
+                        $calendar->setBackgroundColor('#CC9933');
+                        break;
+                    case "Animation éducative et sociale":
+                        $calendar->setBackgroundColor('#ECE9D8');
+                        break;
+                    case "Travail de rue":
+                        $calendar->setBackgroundColor('#00CCCC');
+                        break;
+                    case "Présence sociale hors local":
+                        $calendar->setBackgroundColor('#99CFD8');
                         break;
                     default:
-                        $calendar->setBackgroundColor("#b7b7b7");
+                        $calendar->setBackgroundColor("#CCCCFF");
                 }
 
                 $calendar->setUser($this->getUser());

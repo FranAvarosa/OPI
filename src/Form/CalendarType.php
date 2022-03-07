@@ -30,9 +30,23 @@ class CalendarType extends AbstractType
             ->add('description')
             ->add('category', ChoiceType::class, [
                 'choices'  => [
-                    'En attente' => 'En attente',
+                    'En Attente' => 'En Attente',
+                    'Arrêt Maladie' => 'Arrêt Maladie',
+                    'Jour férié' => 'Jour férié',
+                    'CT' => 'CT',
+                    'CA' => 'CA',
+                    'DP' => 'DP',
+                    'TA COMPT' => 'TA COMPT',
+                    'AEP' => 'AEP',
+                    'Absence' => 'Absence',
+                    'Evaluation' => 'Evaluation',
+                    'Formation' => 'Formation',
+                    'Coordination et préparation' => 'Coordination et preparation',
+                    'Action Institution et partenariat' => 'Action Institution et partenariat',
+                    'Animation éducative et sociale' => 'Animation educative et sociale',
                     'Travail de rue' => 'Travail de rue',
-                    'Travail de nuit' => 'Travail de nuit'
+                    'Présence sociale' => 'Presence sociale',
+                    'Présence sociale hors local' => 'Presence sociale hors local',
                 ],
             ])
         ;
