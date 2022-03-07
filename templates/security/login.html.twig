@@ -3,6 +3,7 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
+<<<<<<< HEAD
 <form method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -39,4 +40,46 @@
         Sign in
     </button>
 </form>
+=======
+    {% if error %}
+        <div class="alert alert-danger">Email ou mot de passe Incorrect</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="loggedcontainer">
+            <p class="loggedmessage">Vous êtes déjà connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}, <a href="{{ path('app_logout') }}">Cliquez ici pour vous déconnectez</a>
+            </p>
+        </div>
+    {% else %}
+    <form method="post">
+        <div class="loginform">
+            <h1 class="h3 mb-3 font-weight-normal titlelogin">Bienvenue sur votre espace membres OPI. Veuillez vous connecter pour accéder à votre planning.</h1>
+            <div class="wrapper">
+                <label for="inputEmail">E-mail</label>
+                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                <label for="inputPassword">Mot de passe</label>
+                <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+                <input type="hidden" name="_csrf_token"
+                    value="{{ csrf_token('authenticate') }}"
+                >
+            </div>
+        {#
+            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+            See https://symfony.com/doc/current/security/remember_me.html
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" name="_remember_me"> Remember me
+                </label>
+            </div>
+        #}
+
+            <button class="btn btn-lg btn-primary connexion" type="submit">
+                Connexion
+            </button>
+        </div>
+    </form>
+    {% endif %}
+>>>>>>> 7af646121c36d506a888200ad032cb382d14e215
 {% endblock %}

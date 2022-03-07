@@ -3,6 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+<<<<<<< HEAD
+=======
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+>>>>>>> 7af646121c36d506a888200ad032cb382d14e215
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -30,6 +35,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 
+<<<<<<< HEAD
+=======
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private $service;
+
+    #[ORM\OneToMany(mappedBy: 'User', targetEntity: Calendar::class)]
+    private $Calendar;
+
+    public function __construct()
+    {
+        $this->Calendar = new ArrayCollection();
+    }
+
+>>>>>>> 7af646121c36d506a888200ad032cb382d14e215
     public function getId(): ?int
     {
         return $this->id;
@@ -123,4 +142,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+<<<<<<< HEAD
+=======
+
+    public function getService(): ?string
+    {
+        return $this->service;
+    }
+
+    public function setService(?string $service): self
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Calendar>
+     */
+    public function getCalendar(): Collection
+    {
+        return $this->Calendar;
+    }
+
+    public function addCalendar(Calendar $calendar): self
+    {
+        if (!$this->Calendar->contains($calendar)) {
+            $this->Calendar[] = $calendar;
+            $calendar->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCalendar(Calendar $calendar): self
+    {
+        if ($this->Calendar->removeElement($calendar)) {
+            // set the owning side to null (unless already changed)
+            if ($calendar->getUser() === $this) {
+                $calendar->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->nom . ' ' .$this->prenom;
+    }
+>>>>>>> 7af646121c36d506a888200ad032cb382d14e215
 }
