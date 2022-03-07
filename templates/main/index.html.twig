@@ -53,6 +53,7 @@
                 locale: 'fr',
                 timeZone: 'local',
                 firstDay: 1,
+                allDaySlot: false,
 
                 customButtons: {
                     myCustomButton: {
@@ -74,24 +75,6 @@
                     let eventId = event.event._def.publicId;
                     window.location.href = "/calendar/" + eventId + "/edit";
                 },
-
-                // eventWillUnmount: function(){
-                //     let durations = [];
-                //     let currentDate = moment(calendar.getDate());
-                //
-                //     getCalendarEvents(durations);
-                //
-                //     getNumberOfHours(currentDate, durations);
-                // },
-                //
-                // eventContent: function() {
-                //     let durations = [];
-                //     let currentDate = moment(calendar.getDate());
-                //
-                //     getCalendarEvents(durations);
-                //
-                //     getNumberOfHours(currentDate, durations);
-                // },
             });
 
             function getHourInCurrentWeek(durations, weekStart) {
@@ -251,24 +234,6 @@
                 console.log(durations);
                 return durations;
             }
-
-            // // draggable
-            // calendar.on('eventChange', (e) => {
-            //     let url = `/api/${e.event.id}/edit`;
-            //     let donnees = {
-            //         "title": e.event.title,
-            //         "description": e.event.extendedProps.description,
-            //         "start": e.event.start,
-            //         "end": e.event.end,
-            //         "backgroundColor": e.event.backgroundColor,
-            //         "borderColor": e.event.borderColor,
-            //         "textColor": e.event.textColor,
-            //         "allDay": e.event.allDay
-            //     };
-            //     let xhr = new XMLHttpRequest;
-            //     xhr.open("PUT", url);
-            //     xhr.send(JSON.stringify(donnees));
-            // });
 
             function iniCalendarDate() {
                 let durations = [];

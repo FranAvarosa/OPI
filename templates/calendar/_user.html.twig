@@ -14,33 +14,21 @@
 <br />
 <div id="calendrier">
 </div>
-{% set totalHour = 0 %}
-{% for plannings in planning %}
-    {% set totalHour = totalHour + plannings.date_diff %}
-{% endfor %}
 <div class="container-fluid">
-    <div class="row justify-content-end text-center">
-        <div class="col-4">
+    <div class="row justify-content-center text-center">
+        <div id="totalOfHoursInYear" class="col-4">
             <div class="h2">
-                Total des heures : {{ totalHour }}
+                Total de l'année : <span class="hourHolder"></span>
             </div>
         </div>
-        <div class="col-4">
+        <div id="totalOfHoursInMonth" class="col-4">
             <div class="h2">
-                {% for plannings in planning %}
-                    {% set currentMonth = 'now'|date('F') %}
-                    {% set dateTime = date(plannings.start) %}
-                    <span class="month">{{ dateTime | date('F') }}</span>
-                    {% if currentMonth == dateTime %}
-                        success
-                    {% endif %}
-                {% endfor %}
-                Total du mois : {{ totalHour }}
+                Total du mois : <span class="hourHolder"></span>
             </div>
         </div>
-        <div class="col-4">
+        <div id="totalOfHoursInWeek" class="col-4">
             <div class="h2">
-                Total de la semaine : {{ totalHour }}
+                Total de la semaine : <span class="hourHolder"></span>
             </div>
         </div>
     </div>
