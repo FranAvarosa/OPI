@@ -28,13 +28,6 @@ class CalendarType extends AbstractType
                 'input' => 'datetime'
             ])
             ->add('description')
-//            ->add('background_color', ChoiceType::class, [
-//                'choices'  => [
-//                    'En attente' => '#b7b7b7',
-//                    'Travail de rue' => '#eac159',
-//                    'Travail de nuit' => '#bf82dd'
-//                ],
-//            ])
             ->add('category', ChoiceType::class, [
                 'choices'  => [
                     'En attente' => 'En attente',

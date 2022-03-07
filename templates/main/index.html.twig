@@ -67,8 +67,15 @@
                 headerToolbar: {
                     start: 'prev,next today dayGridMonth,timeGridWeek',
                     center: 'title',
-                    end: 'myCustomButton'
+                    end: 'myCustomButton',
                 },
+
+                buttonText: {
+                    today:    "Aujourd'hui",
+                    month:    'Mois',
+                    week:     'Semaine',
+                },
+
                 events: {{ planning|json_encode|raw }},
 
                 eventClick: function(event) {
@@ -163,8 +170,8 @@
                     let newDiv = document.createElement("div");
                     newDiv.innerHTML = '<div style="margin-bottom: 24px">' +
                             '<h2>' + hourInCurrentWeek.categoryName + '</h2>' +
-                            '<div>hour spent : ' + hourInCurrentWeek.numberOfHours + '</div>' +
-                            '<div>extra hour spent : ' + hourInCurrentWeek.numberOfExtraHours + '</div></div>';
+                            '<div>Heures normales : ' + hourInCurrentWeek.numberOfHours + '</div>' +
+                            '<div>Soirs et week-end : ' + hourInCurrentWeek.numberOfExtraHours + '</div></div>';
 
                     totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].appendChild(newDiv);
                 }

@@ -105,7 +105,6 @@ class CalendarController extends AbstractController
                 }
 
                 $calendar->setUser($this->getUser());
-                $calendar->setDateDiff($diffInHours);
                 $calendar->setEnd($dateEnd);
                 $entityManager->persist($calendar);
                 $entityManager->flush();
