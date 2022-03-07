@@ -25,20 +25,17 @@ class Calendar
     #[ORM\Column(type: 'text')]
     private $description;
 
-    #[ORM\Column(type: 'boolean')]
-    private $all_day;
-
     #[ORM\Column(type: 'string', length: 7)]
     private $background_color;
 
-    #[ORM\Column(type: 'string', length: 7)]
-    private $border_color;
-
-    #[ORM\Column(type: 'string', length: 7)]
-    private $text_color;
-
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'Calendar')]
     private $User;
+
+    #[ORM\Column(type: 'integer')]
+    private $date_diff;
+
+    #[ORM\Column(type: 'string', length: 100)]
+    private $category;
 
     public function getId(): ?int
     {
@@ -93,18 +90,6 @@ class Calendar
         return $this;
     }
 
-    public function getAllDay(): ?bool
-    {
-        return $this->all_day;
-    }
-
-    public function setAllDay(bool $all_day): self
-    {
-        $this->all_day = $all_day;
-
-        return $this;
-    }
-
     public function getBackgroundColor(): ?string
     {
         return $this->background_color;
@@ -117,30 +102,6 @@ class Calendar
         return $this;
     }
 
-    public function getBorderColor(): ?string
-    {
-        return $this->border_color;
-    }
-
-    public function setBorderColor(string $border_color): self
-    {
-        $this->border_color = $border_color;
-
-        return $this;
-    }
-
-    public function getTextColor(): ?string
-    {
-        return $this->text_color;
-    }
-
-    public function setTextColor(string $text_color): self
-    {
-        $this->text_color = $text_color;
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->User;
@@ -149,6 +110,29 @@ class Calendar
     public function setUser(?User $User): self
     {
         $this->User = $User;
+
+        return $this;
+    }
+
+    public function getDateDiff(): ?int
+    {
+        return $this->date_diff;
+    }
+
+    public function setDateDiff(int $date_diff): self
+    {
+        $this->date_diff = $date_diff;
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
