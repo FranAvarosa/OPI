@@ -53,6 +53,7 @@
                 locale: 'fr',
                 timeZone: 'local',
                 firstDay: 1,
+                allDaySlot: false,
 
                 customButtons: {
                     myCustomButton: {
@@ -66,32 +67,21 @@
                 headerToolbar: {
                     start: 'prev,next today dayGridMonth,timeGridWeek',
                     center: 'title',
-                    end: 'myCustomButton'
+                    end: 'myCustomButton',
                 },
+
+                buttonText: {
+                    today:    "Aujourd'hui",
+                    month:    'Mois',
+                    week:     'Semaine',
+                },
+
                 events: {{ planning|json_encode|raw }},
 
                 eventClick: function(event) {
                     let eventId = event.event._def.publicId;
                     window.location.href = "/calendar/" + eventId + "/edit";
                 },
-
-                // eventWillUnmount: function(){
-                //     let durations = [];
-                //     let currentDate = moment(calendar.getDate());
-                //
-                //     getCalendarEvents(durations);
-                //
-                //     getNumberOfHours(currentDate, durations);
-                // },
-                //
-                // eventContent: function() {
-                //     let durations = [];
-                //     let currentDate = moment(calendar.getDate());
-                //
-                //     getCalendarEvents(durations);
-                //
-                //     getNumberOfHours(currentDate, durations);
-                // },
             });
 
             function getHourInCurrentWeek(durations, weekStart) {
@@ -180,8 +170,8 @@
                     let newDiv = document.createElement("div");
                     newDiv.innerHTML = '<div style="margin-bottom: 24px">' +
                             '<h2>' + hourInCurrentWeek.categoryName + '</h2>' +
-                            '<div>hour spent : ' + hourInCurrentWeek.numberOfHours + '</div>' +
-                            '<div>extra hour spent : ' + hourInCurrentWeek.numberOfExtraHours + '</div></div>';
+                            '<div>Heures normales : ' + hourInCurrentWeek.numberOfHours + '</div>' +
+                            '<div>Soirs et week-end : ' + hourInCurrentWeek.numberOfExtraHours + '</div></div>';
 
                     totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].appendChild(newDiv);
                 }
@@ -251,24 +241,6 @@
                 console.log(durations);
                 return durations;
             }
-
-            // // draggable
-            // calendar.on('eventChange', (e) => {
-            //     let url = `/api/${e.event.id}/edit`;
-            //     let donnees = {
-            //         "title": e.event.title,
-            //         "description": e.event.extendedProps.description,
-            //         "start": e.event.start,
-            //         "end": e.event.end,
-            //         "backgroundColor": e.event.backgroundColor,
-            //         "borderColor": e.event.borderColor,
-            //         "textColor": e.event.textColor,
-            //         "allDay": e.event.allDay
-            //     };
-            //     let xhr = new XMLHttpRequest;
-            //     xhr.open("PUT", url);
-            //     xhr.send(JSON.stringify(donnees));
-            // });
 
             function iniCalendarDate() {
                 let durations = [];

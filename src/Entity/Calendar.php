@@ -31,9 +31,6 @@ class Calendar
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'Calendar')]
     private $User;
 
-    #[ORM\Column(type: 'integer')]
-    private $date_diff;
-
     #[ORM\Column(type: 'string', length: 100)]
     private $category;
 
@@ -111,17 +108,6 @@ class Calendar
     {
         $this->User = $User;
 
-        return $this;
-    }
-
-    public function getDateDiff(): ?int
-    {
-        return $this->date_diff;
-    }
-
-    public function setDateDiff(int $date_diff): self
-    {
-        $this->date_diff = $date_diff;
         return $this;
     }
 
