@@ -27,7 +27,7 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         //return parent::index();
-        $url = $this->adminUrlGenerator->setController(CalendarCrudController::class)->generateUrl();
+        $url = $this->adminUrlGenerator->setController(UserCrudController::class)->generateUrl();
 
         return $this->redirect($url);
         // Option 1. You can make your dashboard redirect to some common page of your backend
@@ -52,8 +52,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('OPI')
-            ->setTitle('<img src="../public/assets/images/logo.jpg"> ACME <span class="text-small">Corp.</span>');
+            ->setTitle('OPI');
     }
 
     public function configureMenuItems(): iterable

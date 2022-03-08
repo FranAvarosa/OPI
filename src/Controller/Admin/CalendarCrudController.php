@@ -30,8 +30,8 @@ class CalendarCrudController extends AbstractCrudController
             TextEditorField::new('description'),
             ChoiceField::new('category', 'Categorie')->setChoices([
                 'En Attente' => 'En Attente',
-                'Arrêt Maladie' => 'Arret Maladie',
-                'Jour férié' => 'Jour ferie',
+                'Arrêt Maladie' => 'Arrêt Maladie',
+                'Jour férié' => 'Jour férié',
                 'CT' => 'CT',
                 'CA' => 'CA',
                 'DP' => 'DP',
