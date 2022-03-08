@@ -28,28 +28,17 @@ class CalendarController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                // add start's day to end's time
                 $date1 = $calendar->getStart();
-
                 $date1Ymd = $calendar->getStart()->format('Y-m-d');
                 $date2His = $calendar->getEnd()->format('H:i:s');
                 $dateString = $date1Ymd . ' ' . $date2His;
                 $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
 
+                // check if end is not before start
                 if ($dateEnd > $date1) {
                     $category = $calendar->getCategory();
-                    switch ($category) {
-                        case "En attente";
-                            $calendar->setBackgroundColor('#b7b7b7');
-                            break;
-                        case "Travail de rue";
-                            $calendar->setBackgroundColor('#eac159');
-                            break;
-                        case "Travail de nuit";
-                            $calendar->setBackgroundColor('#bf82dd');
-                            break;
-                        default:
-                            $calendar->setBackgroundColor("#b7b7b7");
-                    }
+                    $this->setBackgroundColors($category, $calendar);
 
                     $calendar->setUser($this->getUser());
                     $calendar->setEnd($dateEnd);
@@ -74,22 +63,29 @@ class CalendarController extends AbstractController
     #[Route('/{id}/edit', name: 'calendar_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Calendar $calendar, EntityManagerInterface $entityManager): Response
     {
+        // check if logged in
         $securityContext = $this->container->get('security.authorization_checker');
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            // get current user infos
             $currentUserId = $this->getUser()->getId();
             $currentUserService = $this->getUser()->getService();
+
+            // get event infos
             $attachedUserId = $calendar->getUser()->getId();
             $attachedUserService = $calendar->getUser()->getService();
+
+            // check current user role
             $roleCheckerChef = $this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE');
             $roleCheckerAdmin = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
 
+            // check if current user is allowed to edit
             if ($roleCheckerAdmin or $currentUserId == $attachedUserId or $currentUserService == $attachedUserService and $roleCheckerChef) {
                 $form = $this->createForm(CalendarType::class, $calendar);
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid()) {
+                    // add start's day to end's time
                     $date1 = $calendar->getStart();
-
                     $date1Ymd = $calendar->getStart()->format('Y-m-d');
                     $date2His = $calendar->getEnd()->format('H:i:s');
                     $dateString = $date1Ymd . ' ' . $date2His;
@@ -97,49 +93,7 @@ class CalendarController extends AbstractController
 
                     if ($dateEnd > $date1) {
                         $category = $calendar->getCategory();
-                        switch ($category) {
-                            case "En attente":
-                                $calendar->setBackgroundColor('#CCCCFF');
-                                break;
-                            case "Arrêt Maladie":
-                            case "Jour férié":
-                            case "CT":
-                            case "CA":
-                            case "Absence":
-                            case "Action Institution et partenariat":
-                            case "Présence sociale":
-                                $calendar->setBackgroundColor('#FFCCCC');
-                                break;
-                            case "DP":
-                                $calendar->setBackgroundColor('#FF9900');
-                                break;
-                            case "TA COMPT":
-                                $calendar->setBackgroundColor('#6666CC');
-                                break;
-                            case "AEP":
-                                $calendar->setBackgroundColor('#9999FF');
-                                break;
-                            case "Evaluation":
-                                $calendar->setBackgroundColor('#FF6666');
-                                break;
-                            case "Formation":
-                                $calendar->setBackgroundColor('#33CCFF');
-                                break;
-                            case "Coordination et préparation":
-                                $calendar->setBackgroundColor('#CC9933');
-                                break;
-                            case "Animation éducative et sociale":
-                                $calendar->setBackgroundColor('#ECE9D8');
-                                break;
-                            case "Travail de rue":
-                                $calendar->setBackgroundColor('#00CCCC');
-                                break;
-                            case "Présence sociale hors local":
-                                $calendar->setBackgroundColor('#99CFD8');
-                                break;
-                            default:
-                                $calendar->setBackgroundColor("#CCCCFF");
-                        }
+                        $this->setBackgroundColors($category, $calendar);
 
                         $calendar->setEnd($dateEnd);
                         $entityManager->persist($calendar);
@@ -172,5 +126,51 @@ class CalendarController extends AbstractController
         }
 
         return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
+    }
+
+    function setBackgroundColors($category, $calendar){
+        switch ($category) {
+            case "En attente":
+                $calendar->setBackgroundColor('#CCCCFF');
+                break;
+            case "Arrêt Maladie":
+            case "Jour férié":
+            case "CT":
+            case "CA":
+            case "Absence":
+            case "Action Institution et partenariat":
+            case "Présence sociale":
+                $calendar->setBackgroundColor('#FFCCCC');
+                break;
+            case "DP":
+                $calendar->setBackgroundColor('#FF9900');
+                break;
+            case "TA COMPT":
+                $calendar->setBackgroundColor('#6666CC');
+                break;
+            case "AEP":
+                $calendar->setBackgroundColor('#9999FF');
+                break;
+            case "Evaluation":
+                $calendar->setBackgroundColor('#FF6666');
+                break;
+            case "Formation":
+                $calendar->setBackgroundColor('#33CCFF');
+                break;
+            case "Coordination et préparation":
+                $calendar->setBackgroundColor('#CC9933');
+                break;
+            case "Animation éducative et sociale":
+                $calendar->setBackgroundColor('#ECE9D8');
+                break;
+            case "Travail de rue":
+                $calendar->setBackgroundColor('#00CCCC');
+                break;
+            case "Présence sociale hors local":
+                $calendar->setBackgroundColor('#99CFD8');
+                break;
+            default:
+                $calendar->setBackgroundColor("#CCCCFF");
+        }
     }
 }
