@@ -16,5 +16,13 @@
                 </div>
             </div>
         </div>
+    {% else %}
+        <div class="container-fluid">
+            <div class="loggedcontainer">
+                <p class="loggedmessage">
+                    <a href="{{ path('app_login') }}">Cliquez ici pour vous connecter.</a>
+                </p>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}

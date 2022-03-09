@@ -71,9 +71,9 @@
                 },
 
                 buttonText: {
-                    today:    "Aujourd'hui",
-                    month:    'Mois',
-                    week:     'Semaine',
+                    today: "Aujourd'hui",
+                    month: 'Mois',
+                    week: 'Semaine',
                 },
 
                 events: {{ planning|json_encode|raw }},
@@ -153,28 +153,32 @@
                 let yearEnd = currentDate.endOf('year').format();
 
                 let hoursInCurrentWeek = getHourInCurrentWeek(durations, weekStart);
+
                 let hourInCurrentMonth = parseFloat((getHourInCurrentMonth(durations, currentDate, monthStart) / 60).toFixed(1));
                 let hourInCurrentYear = parseFloat((getHourInCurrentYear(durations, yearStart, yearEnd) / 60).toFixed(1));
 
 
                 totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = '';
                 let totalOfHoursInWeek = 0;
+                let totalOfExtraHoursInWeek = 0;
                 for (let hourInCurrentWeek of hoursInCurrentWeek) {
                     totalOfHoursInWeek += hourInCurrentWeek.numberOfHours;
                     totalOfHoursInWeek += hourInCurrentWeek.numberOfExtraHours;
+                    totalOfExtraHoursInWeek += hourInCurrentWeek.numberOfExtraHours;
                 }
 
-                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = totalOfHoursInWeek;
+                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = totalOfHoursInWeek.toFixed(1);
+                totalOfHoursInWeekHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = totalOfExtraHoursInWeek.toFixed(1);
 
                 for (let hourInCurrentWeek of hoursInCurrentWeek) {
                     let newDiv = document.createElement("div");
                     newDiv.innerHTML = '<div style="margin-bottom: 24px">' +
-                            '<h2>' + hourInCurrentWeek.categoryName + '</h2>' +
-                            '<div>Heures normales : ' + hourInCurrentWeek.numberOfHours + '</div>' +
-                            '<div>Soirs et week-end : ' + hourInCurrentWeek.numberOfExtraHours + '</div></div>';
+                            '<div>' + hourInCurrentWeek.categoryName + ' : ' +
+                            (hourInCurrentWeek.numberOfHours + hourInCurrentWeek.numberOfExtraHours).toFixed(1) + '</div>';
 
-                    totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].appendChild(newDiv);
+                    totalOfHoursInWeekHolder.getElementsByClassName('extraHourHolder')[0].appendChild(newDiv);
                 }
+
 
                 totalOfHoursInYearHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentYear;
                 totalOfHoursInMonthHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentMonth;
