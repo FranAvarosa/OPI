@@ -3,18 +3,29 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return User::class;
+    }
+
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordHasherInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     
@@ -25,7 +36,11 @@ class UserCrudController extends AbstractCrudController
             EmailField::new('email'),
             TextEditorField::new('nom'),
             TextEditorField::new('prenom'),
-            ChoiceField::new('service1', 'Service')->setChoices([
+            TextField::new('plainPassword', 'password')
+                ->setFormType(PasswordType::class)
+                ->setRequired($pageName === Crud::PAGE_NEW)
+                ->onlyOnForms(),
+            ChoiceField::new('service1', 'Service 1')->setChoices([
                 'Quartier De Neuhof' => 'Quartier De Neuhof',
                 'Quartier Cité de l\'Ill' => 'Quartier Cité de l\'Ill',
                 'Quartier De Koenigshoffen' => 'Quartier De Koenigshoffen',
@@ -34,7 +49,7 @@ class UserCrudController extends AbstractCrudController
                 'Quartier De l\'Elsau' => 'Quartier De l\'Elsau',
                 'Equipe Focale' => 'Equipe Focale',
             ]),
-            ChoiceField::new('service2', 'Service')->setChoices([
+            ChoiceField::new('service2', 'Service 2')->setChoices([
                 'Quartier De Neuhof' => 'Quartier De Neuhof',
                 'Quartier Cité de l\'Ill' => 'Quartier Cité de l\'Ill',
                 'Quartier De Koenigshoffen' => 'Quartier De Koenigshoffen',
@@ -45,5 +60,25 @@ class UserCrudController extends AbstractCrudController
             ]),
         ];
     }
-    
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->encodePassword($entityInstance);
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->encodePassword($entityInstance);
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
+    private function encodePassword(User $user)
+    {
+        if ($user->getPlainPassword() !== null) {
+            $user->setSalt(base_convert(bin2hex(random_bytes(20)), 16, 36));
+            // This is where you use UserPasswordEncoderInterface
+            $user->setPassword($this->passwordEncoder->hashPassword($user, $user->getPlainPassword()));
+        }
+    }
 }

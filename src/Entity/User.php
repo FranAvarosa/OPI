@@ -26,6 +26,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\Column(type: 'string')]
+    private $plainPassword;
+
+    #[ORM\Column(type: 'string')]
+    private $salt;
+
+
     #[ORM\Column(type: 'string', length: 255)]
     private $prenom;
 
@@ -107,13 +114,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+     /**
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword(?string $plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    /**
+     * @param string $salt
+     */
+    public function setSalt(string $salt)
+    {
+        $this->salt = $salt;
+    }
+
     /**
      * @see UserInterface
      */
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getPrenom(): ?string

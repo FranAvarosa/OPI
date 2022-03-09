@@ -22,7 +22,7 @@ class MainController extends AbstractController
     public function index(CalendarRepository $calendar, UserRepository $userRepository): Response
     {
         $userId = $this->getUser()->getId();
-        $service = $this->getUser()->getService();
+        $service = $this->getUser()->getService1();
         $events = $calendar->findBy(['User' => $userId]);
 
         $planning = [];
@@ -54,7 +54,7 @@ class MainController extends AbstractController
 
             if(empty($idCheck)){
                 $userId = $this->getUser()->getId();
-                $service = $this->getUser()->getService();
+                $service = $this->getUser()->getService1();
                 $events = $calendar->findBy(['User' => $userId]);
 
                 $planning = [];
@@ -106,7 +106,7 @@ class MainController extends AbstractController
     {
         if($this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE')){
             $id = $_GET['id'];
-            $service = $this->getUser()->getService();
+            $service = $this->getUser()->getService1();
 
             $userCheck = $userRepository->findBy(['id' => $id]);
 
@@ -114,7 +114,7 @@ class MainController extends AbstractController
             foreach($userCheck as $userChecks){
                 $userArray = [
                     'id' => $userChecks->getId(),
-                    'service' => $userChecks->getService(),
+                    'service' => $userChecks->getService1(),
                 ];
             }
 
