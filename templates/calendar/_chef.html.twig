@@ -17,9 +17,12 @@
         <div class="col-4">
             <div class="loggedUser">"Vous êtes connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}"  </div>
             <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+            {% if userService1 is defined %}
+                <h2>{{ userService1 }}</h2><br/>
+            {% endif %}
             {% for lists in list %}
-                {% if userService is defined and lists.service == userService %}
-                <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                {% if userService1 is defined and lists.service1 == userService1 %}
+                    <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
                 {% endif %}
             {% endfor %}
         </div>
@@ -31,24 +34,38 @@
 <br />
 <div class="container-fluid">
     <div class="row justify-content-center text-center">
-        <div id="totalOfHoursInYear" class="col-4">
+        <div id="totalOfHoursInYear" class="col-4" data-role="isNotAdmin">
             <div class="h2 colorChange">
-                Total de l'année : <span class="hourHolder"></span>  H
+                <h2>Total de l'année : <span class="hourHolder"></span> H</h2>
+            </div>
+            <div class="h2">
+                <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+            </div>
+            <div id="extraHourByCategoriesYear">
+                <!-- generated loop of categories goes here -->
             </div>
         </div>
-        <div id="totalOfHoursInMonth" class="col-4">
-            <div class="h2 colorChange">
-                Total du mois : <span class="hourHolder"></span>  H
-            </div>
-        </div>
+{#        <div id="totalOfHoursInMonth" class="col-4">#}
+{#            <div class="h2 colorChange">#}
+{#                Total du mois : <span class="hourHolder"></span>  H#}
+{#            </div>#}
+{#            <div class="h3">#}
+{#                <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>#}
+{#            </div>#}
+{#            <div id="extraHourByCategoriesMonth">#}
+{#                <!-- generated loop of categories goes here -->#}
+{#            </div>#}
+{#        </div>#}
         <div id="totalOfHoursInWeek" class="col-4">
             <div class="h2 colorChange">
-                Total de la semaine : <span class="hourHolder"></span>  H
+                <h2>Total de la semaine : <span class="hourHolder"></span> H</h2>
             </div>
             <div class="h3">
-                Soirs et week-end : <span class="extraHourHolder"></span>
+                <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
             </div>
-            {#            <div style="margin-bottom: 100px"></div>#}
+            <div id="extraHourByCategoriesWeek">
+                <!-- generated loop of categories goes here -->
+            </div>
         </div>
     </div>
     <div class="row justify-content-center text-center">

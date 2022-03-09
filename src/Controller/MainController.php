@@ -26,7 +26,9 @@ class MainController extends AbstractController
         $securityContext = $this->container->get('security.authorization_checker');
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $userId = $this->getUser()->getId();
-            $service = $this->getUser()->getService();
+            $service1 = $this->getUser()->getService1();
+            $service2 = $this->getUser()->getService2();
+
             $events = $calendar->findBy(['User' => $userId]);
 
             $planning = $this->getPlanningArray($events);
@@ -34,7 +36,8 @@ class MainController extends AbstractController
             return $this->render('main/index.html.twig', [
                 'planning' => $planning,
                 'list' => $userRepository->findAll(),
-                'userService' => $service,
+                'userService1' => $service1,
+                'userService2' => $service2,
             ]);
         } else {
             return $this->render('security/restricted.html.twig');
@@ -53,7 +56,7 @@ class MainController extends AbstractController
             // if id doesn't exist, return own calendar
             if(empty($idCheck)){
                 $userId = $this->getUser()->getId();
-                $service = $this->getUser()->getService();
+                $service = $this->getUser()->getService1();
                 $events = $calendar->findBy(['User' => $userId]);
 
                 $planning = $this->getPlanningArray($events);
@@ -84,7 +87,7 @@ class MainController extends AbstractController
         // check if current user is chefservice
         if($this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE')){
             $id = $_GET['id'];
-            $service = $this->getUser()->getService();
+            $service = $this->getUser()->getService1();
 
             // user url id to get a matching user and find its service
             $userCheck = $userRepository->findBy(['id' => $id]);
@@ -93,7 +96,7 @@ class MainController extends AbstractController
             foreach($userCheck as $userChecks){
                 $userArray = [
                     'id' => $userChecks->getId(),
-                    'service' => $userChecks->getService(),
+                    'service' => $userChecks->getService1(),
                 ];
             }
 

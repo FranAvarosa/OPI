@@ -68,11 +68,11 @@ class CalendarController extends AbstractController
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             // get current user infos
             $currentUserId = $this->getUser()->getId();
-            $currentUserService = $this->getUser()->getService();
+            $currentUserService = $this->getUser()->getService1();
 
             // get event infos
             $attachedUserId = $calendar->getUser()->getId();
-            $attachedUserService = $calendar->getUser()->getService();
+            $attachedUserService = $calendar->getUser()->getService1();
 
             // check current user role
             $roleCheckerChef = $this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE');
