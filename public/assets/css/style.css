@@ -1,5 +1,9 @@
+body{
+    background-color: aliceblue;
+}
 header{
-    width: 100%;   
+    width: 100%;
+    background-color: #fff; 
 }
 
 .header_top{
@@ -44,9 +48,29 @@ header{
     cursor: pointer;
 }
 
+.grid{
+    display: grid;
+    grid-template-columns: 80% 20%;
+    grid-template-rows: 80% 20%;
+    grid-auto-flow: row;
+}
+
 #calendrier {
-    width: 60%;
+    width: 80%;
     margin: auto;
+}
+
+.loggedUser{
+    font-size: 20px;
+}
+
+.lienlisteemploye,
+.lienlisteemploye:hover,
+.lienlisteemploye:visited
+.lienlisteemploye:focus{
+    color:#2C3E50;
+    outline: none;
+    text-decoration: none;
 }
 
 .fc-theme-standard .fc-scrollgrid {
