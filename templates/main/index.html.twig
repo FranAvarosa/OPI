@@ -172,9 +172,9 @@
 
                 for (let hourInCurrentWeek of hoursInCurrentWeek) {
                     let newDiv = document.createElement("div");
-                    newDiv.innerHTML = '<div style="margin-bottom: 24px">' +
+                    newDiv.innerHTML =
                             '<div>' + hourInCurrentWeek.categoryName + ' : ' +
-                            (hourInCurrentWeek.numberOfHours + hourInCurrentWeek.numberOfExtraHours).toFixed(1) + '</div>';
+                            (hourInCurrentWeek.numberOfHours + hourInCurrentWeek.numberOfExtraHours).toFixed(1) + 'H</div>';
 
                     totalOfHoursInWeekHolder.getElementsByClassName('extraHourHolder')[0].appendChild(newDiv);
                 }
@@ -186,9 +186,11 @@
                 if(calendar.view.type === 'dayGridMonth'){
                     totalOfHoursInWeekHolder.style.display = 'none';
                     totalOfHoursInMonthHolder.style.display = 'block';
+                    totalOfHoursInYearHolder.style.display = 'block';
                 } else {
                     totalOfHoursInWeekHolder.style.display = 'block';
                     totalOfHoursInMonthHolder.style.display = 'none';
+                    totalOfHoursInYearHolder.style.display = 'none';
                 }
             }
 
