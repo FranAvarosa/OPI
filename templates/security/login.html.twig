@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
     {% if error %}
@@ -8,14 +8,22 @@
     {% endif %}
 
     {% if app.user %}
-        <div class="loggedcontainer">
-            <p class="loggedmessage">Vous êtes déjà connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}, <a href="{{ path('app_logout') }}">Cliquez ici pour vous déconnectez</a>
-            </p>
+        <div class="container-fluid">
+            <div class="loggedcontainer">
+                <p class="loggedmessage">Vous êtes déjà connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}<br />
+                    <a href="{{ path('app_logout') }}">Cliquez ici pour vous déconnectez</a>
+                </p>
+            </div>
+            <div class="row justify-content-center text-center">
+                <div class="col-offset-4 col-4">
+                    <a href="{{ path('main') }}" class="btn btn-secondary">Retourner au calendrier</a>
+                </div>
+            </div>
         </div>
     {% else %}
     <form method="post">
         <div class="loginform">
-            <h1 class="h3 mb-3 font-weight-normal titlelogin">Bienvenue sur votre espace membres OPI. Veuillez vous connecter pour accéder à votre planning.</h1>
+            <h1 class="h3 mb-3 font-weight-normal titlelogin">Bienvenue sur votre espace membre OPI. Veuillez vous connecter pour accéder à votre planning.</h1>
             <div class="wrapper">
                 <label for="inputEmail">E-mail</label>
                 <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>

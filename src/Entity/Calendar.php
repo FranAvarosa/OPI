@@ -25,17 +25,14 @@ class Calendar
     #[ORM\Column(type: 'text')]
     private $description;
 
-    #[ORM\Column(type: 'boolean')]
-    private $all_day;
-
     #[ORM\Column(type: 'string', length: 7)]
     private $background_color;
 
-    #[ORM\Column(type: 'string', length: 7)]
-    private $border_color;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'Calendar')]
+    private $User;
 
-    #[ORM\Column(type: 'string', length: 7)]
-    private $text_color;
+    #[ORM\Column(type: 'string', length: 100)]
+    private $category;
 
     public function getId(): ?int
     {
@@ -90,18 +87,6 @@ class Calendar
         return $this;
     }
 
-    public function getAllDay(): ?bool
-    {
-        return $this->all_day;
-    }
-
-    public function setAllDay(bool $all_day): self
-    {
-        $this->all_day = $all_day;
-
-        return $this;
-    }
-
     public function getBackgroundColor(): ?string
     {
         return $this->background_color;
@@ -114,26 +99,26 @@ class Calendar
         return $this;
     }
 
-    public function getBorderColor(): ?string
+    public function getUser(): ?User
     {
-        return $this->border_color;
+        return $this->User;
     }
 
-    public function setBorderColor(string $border_color): self
+    public function setUser(?User $User): self
     {
-        $this->border_color = $border_color;
+        $this->User = $User;
 
         return $this;
     }
 
-    public function getTextColor(): ?string
+    public function getCategory(): ?string
     {
-        return $this->text_color;
+        return $this->category;
     }
 
-    public function setTextColor(string $text_color): self
+    public function setCategory(string $category): self
     {
-        $this->text_color = $text_color;
+        $this->category = $category;
 
         return $this;
     }
