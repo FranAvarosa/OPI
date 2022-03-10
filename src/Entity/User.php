@@ -48,9 +48,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: Calendar::class)]
     private $Calendar;
 
+    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: Service::class)]
+    private $serviceId;
+
     public function __construct()
     {
         $this->Calendar = new ArrayCollection();
+        $this->serviceId = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -236,5 +240,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->nom . ' ' .$this->prenom;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServiceId(): Collection
+    {
+        return $this->serviceId;
+    }
+
+    public function addServiceId(Service $serviceId): self
+    {
+        if (!$this->serviceId->contains($serviceId)) {
+            $this->serviceId[] = $serviceId;
+            $serviceId->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceId(Service $serviceId): self
+    {
+        if ($this->serviceId->removeElement($serviceId)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceId->getUserId() === $this) {
+                $serviceId->setUserId(null);
+            }
+        }
+
+        return $this;
     }
 }

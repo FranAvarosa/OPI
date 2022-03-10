@@ -44,7 +44,7 @@
 
         window.onload = () => {
             let totalOfHoursInYearHolder = document.getElementById('totalOfHoursInYear');
-            let totalOfHoursInMonthHolder = document.getElementById('totalOfHoursInMonth');
+            // let totalOfHoursInMonthHolder = document.getElementById('totalOfHoursInMonth');
             let totalOfHoursInWeekHolder = document.getElementById('totalOfHoursInWeek');
             let calendarEvents = [];
             let calendarEl = document.querySelector("#calendrier");
@@ -107,37 +107,60 @@
                         }
                     }
                 }
-                console.log(hoursInCurrentWeek);
+
                 return hoursInCurrentWeek;
             }
 
-            function getHourInCurrentMonth(durations, currentDate, monthStart) {
-                let hourInCurrentMonth = 0;
-                for (let i = 0; i <= currentDate.daysInMonth() - 1; i++) {
-                    for (let duration of durations) {
-                        let daysHours = duration[moment(monthStart).add(i, 'days').format("YYYY-MM-DD")];
-                        if (daysHours !== undefined) {
-                            hourInCurrentMonth += daysHours;
-                        }
-                    }
-                }
-
-                return hourInCurrentMonth;
-            }
+            // function getHourInCurrentMonth(durations, currentDate, monthStart) {
+            //     let hourInCurrentMonth = [];
+            //
+            //     for (let i = 0; i <= currentDate.daysInMonth() - 1; i++) {
+            //         for (let duration of durations) {
+            //             let daysHours = duration[moment(monthStart).add(i, 'days').format("YYYY-MM-DD")];
+            //             let extraHours = duration.extraTime;
+            //
+            //             if (daysHours !== undefined) {
+            //                 daysHours = (parseInt(daysHours) / 60);
+            //                 extraHours = (parseInt(extraHours) / 60);
+            //
+            //                 let category = hourInCurrentMonth.filter(element => element.categoryName === duration.category);
+            //
+            //                 if (category.length > 0) {
+            //                     category[0].numberOfHours += daysHours;
+            //                     category[0].numberOfExtraHours += extraHours;
+            //                 } else {
+            //                     hourInCurrentMonth.push(new CategoryData(duration.category, daysHours, extraHours))
+            //                 }
+            //             }
+            //         }
+            //     }
+            //
+            //     return hourInCurrentMonth;
+            // }
 
             function getHourInCurrentYear(durations, yearStart, yearEnd) {
-                let hourInCurrentYear = 0;
+                let hourInCurrentYear = [];
                 let indexOfTheDay = 0;
-                let dateOfEvents = [];
 
                 for (let i = moment(yearStart); i <= moment(yearEnd); i.add(1, 'days')) {
                     for (let duration of durations) {
 
                         let daysHours = duration[moment(yearStart).add(indexOfTheDay, 'days').format("YYYY-MM-DD")];
 
+                        let extraHours = duration.extraTime;
+
                         if (daysHours !== undefined) {
-                            dateOfEvents.push(daysHours);
-                            hourInCurrentYear += daysHours;
+                            daysHours = (parseInt(daysHours) / 60);
+                            extraHours = (parseInt(extraHours) / 60);
+
+                            let category = hourInCurrentYear.filter(element => element.categoryName === duration.category);
+
+                            if (category.length > 0) {
+                                category[0].numberOfHours += daysHours;
+                                category[0].numberOfExtraHours += extraHours;
+                            } else {
+                                hourInCurrentYear.push(new CategoryData(duration.category, daysHours, extraHours))
+                            }
                         }
                     }
                     indexOfTheDay++;
@@ -148,47 +171,92 @@
 
             function getNumberOfHours(currentDate, durations) {
                 let weekStart = currentDate.clone().startOf('isoweek');
-                let monthStart = currentDate.startOf('month').format();
+
+                // let monthStart = currentDate.startOf('month').format();
+
                 let yearStart = currentDate.startOf('year').format();
                 let yearEnd = currentDate.endOf('year').format();
 
                 let hoursInCurrentWeek = getHourInCurrentWeek(durations, weekStart);
+                let hoursInCurrentYear = getHourInCurrentYear(durations, yearStart, yearEnd);
+                // let hoursInCurrentMonth = getHourInCurrentMonth(durations, currentDate, monthStart);
 
-                let hourInCurrentMonth = parseFloat((getHourInCurrentMonth(durations, currentDate, monthStart) / 60).toFixed(1));
-                let hourInCurrentYear = parseFloat((getHourInCurrentYear(durations, yearStart, yearEnd) / 60).toFixed(1));
+                // Week
+                document.getElementById('extraHourByCategoriesWeek').innerHTML = '';
 
-
-                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = '';
                 let totalOfHoursInWeek = 0;
                 let totalOfExtraHoursInWeek = 0;
                 for (let hourInCurrentWeek of hoursInCurrentWeek) {
                     totalOfHoursInWeek += hourInCurrentWeek.numberOfHours;
                     totalOfHoursInWeek += hourInCurrentWeek.numberOfExtraHours;
                     totalOfExtraHoursInWeek += hourInCurrentWeek.numberOfExtraHours;
-                }
 
-                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = totalOfHoursInWeek.toFixed(1);
-                totalOfHoursInWeekHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = totalOfExtraHoursInWeek.toFixed(1);
-
-                for (let hourInCurrentWeek of hoursInCurrentWeek) {
                     let newDiv = document.createElement("div");
-                    newDiv.innerHTML = '<div style="margin-bottom: 24px">' +
-                            '<div>' + hourInCurrentWeek.categoryName + ' : ' +
-                            (hourInCurrentWeek.numberOfHours + hourInCurrentWeek.numberOfExtraHours).toFixed(1) + '</div>';
+                    newDiv.innerHTML =
+                        '<h3>' + hourInCurrentWeek.categoryName + ' : ' +
+                        parseFloat((hourInCurrentWeek.numberOfHours + hourInCurrentWeek.numberOfExtraHours).toFixed(1)) + ' H</h3>';
 
-                    totalOfHoursInWeekHolder.getElementsByClassName('extraHourHolder')[0].appendChild(newDiv);
+                    document.getElementById('extraHourByCategoriesWeek').appendChild(newDiv);
                 }
 
+                totalOfHoursInWeekHolder.getElementsByClassName('hourHolder')[0].innerHTML = parseFloat(totalOfHoursInWeek.toFixed(1));
+                totalOfHoursInWeekHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = parseFloat(totalOfExtraHoursInWeek.toFixed(1));
 
-                totalOfHoursInYearHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentYear;
-                totalOfHoursInMonthHolder.getElementsByClassName('hourHolder')[0].innerHTML = hourInCurrentMonth;
+                // Month
+                // document.getElementById('extraHourByCategoriesMonth').innerHTML = '';
+                //
+                // let totalOfHoursInMonth = 0;
+                // let totalOfExtraHoursInMonth = 0;
+                //
+                // for (let hourInCurrentMonth of hoursInCurrentMonth) {
+                //     totalOfHoursInMonth += hourInCurrentMonth.numberOfHours;
+                //     totalOfHoursInMonth += hourInCurrentMonth.numberOfExtraHours;
+                //     totalOfExtraHoursInMonth += hourInCurrentMonth.numberOfExtraHours;
+                //
+                //     let newDiv = document.createElement("div");
+                //     newDiv.innerHTML =
+                //         '<h3>' + hourInCurrentMonth.categoryName + ' : ' +
+                //         parseFloat((hourInCurrentMonth.numberOfHours + hourInCurrentMonth.numberOfExtraHours).toFixed(1)) + ' H</h3>';
+                //
+                //     document.getElementById('extraHourByCategoriesMonth').appendChild(newDiv);
+                // }
+                //
+                // totalOfHoursInMonthHolder.getElementsByClassName('hourHolder')[0].innerHTML = parseFloat(totalOfHoursInMonth.toFixed(1));
+                // totalOfHoursInMonthHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = parseFloat(totalOfExtraHoursInMonth.toFixed(1));
 
+                // Year
+                document.getElementById('extraHourByCategoriesYear').innerHTML = '';
+
+                let totalOfHoursInYear = 0;
+                let totalOfExtraHoursInYear = 0;
+                for (let hourInCurrentYear of hoursInCurrentYear) {
+                    totalOfHoursInYear += hourInCurrentYear.numberOfHours;
+                    totalOfHoursInYear += hourInCurrentYear.numberOfExtraHours;
+                    totalOfExtraHoursInYear += hourInCurrentYear.numberOfExtraHours;
+
+                    let newDiv = document.createElement("div");
+                    newDiv.innerHTML =
+                        '<h3>' + hourInCurrentYear.categoryName + ' : ' +
+                        parseFloat((hourInCurrentYear.numberOfHours + hourInCurrentYear.numberOfExtraHours).toFixed(1)) + ' H</h3>';
+
+                    document.getElementById('extraHourByCategoriesYear').appendChild(newDiv);
+                }
+
+                totalOfHoursInYearHolder.getElementsByClassName('hourHolder')[0].innerHTML = parseFloat(totalOfHoursInYear.toFixed(1));
+                totalOfHoursInYearHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = parseFloat(totalOfExtraHoursInYear.toFixed(1));
+
+                // manage block display
                 if(calendar.view.type === 'dayGridMonth'){
                     totalOfHoursInWeekHolder.style.display = 'none';
-                    totalOfHoursInMonthHolder.style.display = 'block';
+                    // totalOfHoursInMonthHolder.style.display = 'block';
+                    totalOfHoursInYearHolder.style.display = 'block';
+                    if (totalOfHoursInYearHolder.dataset.role === 'isNotAdmin') {
+                        totalOfHoursInYearHolder.style.display = 'none';
+                    }
                 } else {
                     totalOfHoursInWeekHolder.style.display = 'block';
-                    totalOfHoursInMonthHolder.style.display = 'none';
+                    // totalOfHoursInMonthHolder.style.display = 'none';
+                    totalOfHoursInYearHolder.style.display = 'none';
                 }
             }
 
@@ -196,6 +264,7 @@
                 calendarEvents = calendar.getEvents();
                 let opening = moment('06:00:00', "HH:mm:ss").format("HH:mm:ss");
                 let closing = moment('18:00:00', "HH:mm:ss").format("HH:mm:ss");
+
                 for(let event of calendarEvents){
 
                     let endDate = moment(event._instance.range.end);
@@ -205,8 +274,8 @@
 
                     duration.category = event._def.extendedProps.category;
 
-                    startHour = startDate.utc().format("HH:mm:ss");
-                    endHour = endDate.utc().format("HH:mm:ss");
+                    let startHour = startDate.utc().format("HH:mm:ss");
+                    let endHour = endDate.utc().format("HH:mm:ss");
 
 
                     duration.extra = startDate.weekday() > 5 ||
@@ -242,7 +311,7 @@
 
                     durations.push(duration);
                 }
-                console.log(durations);
+
                 return durations;
             }
 

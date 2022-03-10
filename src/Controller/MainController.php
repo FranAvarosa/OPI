@@ -22,18 +22,12 @@ class MainController extends AbstractController
     #[Route('/', name: 'main')]
     public function index(CalendarRepository $calendar, UserRepository $userRepository): Response
     {
-<<<<<<< HEAD
         // check if logged in
         $securityContext = $this->container->get('security.authorization_checker');
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $userId = $this->getUser()->getId();
             $service = $this->getUser()->getService();
             $events = $calendar->findBy(['User' => $userId]);
-=======
-        $userId = $this->getUser()->getId();
-        $service = $this->getUser()->getService1();
-        $events = $calendar->findBy(['User' => $userId]);
->>>>>>> 8321ccff2bd96d13c0776d198991d27b35e348dd
 
             $planning = $this->getPlanningArray($events);
 
