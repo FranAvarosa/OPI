@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\CalendarRepository;
 use App\Repository\DefaultRepository;
+use App\Repository\ServiceRepository;
 use App\Repository\UserRepository;
 use ContainerE4xO03e\getMaker_PhpCompatUtilService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -14,19 +15,22 @@ use App\Service\ValidatorService;
 use App\Entity\User;
 use PDO;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use function Symfony\Component\HttpFoundation\getUser;
 use function Symfony\Component\Mime\toString;
 
 #[Route('/cal')]
 class MainController extends AbstractController
 {
     #[Route('/', name: 'main')]
-    public function index(CalendarRepository $calendar, UserRepository $userRepository): Response
+    public function index(CalendarRepository $calendar, UserRepository $userRepository, ServiceRepository $serviceRepository): Response
     {
         // check if logged in
         $securityContext = $this->container->get('security.authorization_checker');
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $userId = $this->getUser()->getId();
             $service = $this->getUser()->getService();
+
+            list($service1, $service2) = explode(", ", $service);
 
             $events = $calendar->findBy(['User' => $userId]);
 
@@ -35,7 +39,9 @@ class MainController extends AbstractController
             return $this->render('main/index.html.twig', [
                 'planning' => $planning,
                 'list' => $userRepository->findAll(),
-                'userService' => $service,
+                'service' => $service,
+                'userService1' => $service1,
+                'userService2' => $service2,
             ]);
         } else {
             return $this->render('security/restricted.html.twig');
@@ -87,6 +93,8 @@ class MainController extends AbstractController
             $id = $_GET['id'];
             $service = $this->getUser()->getService();
 
+            list($service1, $service2) = explode(", ", $service);
+
             // user url id to get a matching user and find its service
             $userCheck = $userRepository->findBy(['id' => $id]);
 
@@ -98,7 +106,7 @@ class MainController extends AbstractController
                 ];
             }
 
-            if($service == $userArray['service']) {
+            if($service1 == $userArray['service'] or $service2 == $userArray['service'] or $service == $userArray['service']) {
                 $events = $calendar->findBy(['User' => $id]);
 
                 $planning = $this->getPlanningArray($events);
@@ -108,6 +116,8 @@ class MainController extends AbstractController
                     'list' => $userRepository->findAll(),
                     'calId' => $id,
                     'userService' => $service,
+                    'userService1' => $service1,
+                    'userService2' => $service2,
                 ]);
             } else {
                 return $this->render('security/restricted.html.twig');

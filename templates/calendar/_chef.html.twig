@@ -16,15 +16,26 @@
         </div>
         <div class="col-4">
             <div class="loggedUser">"Vous êtes connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}"  </div>
-            <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
-            {% if userService is defined %}
-                <h2>{{ userService }}</h2><br/>
+            <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a><br />
+
+            <a href="{{ path('main_chef', {'id': app.user.id}) }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/>
+
+            {% if userService1 is defined and userService1 != 'NULL' %}
+                <h2>{{ userService1 }}</h2><br/>
+                {% for lists in list %}
+                    {% if lists.service == userService1 %}
+                        <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
-            {% for lists in list %}
-                {% if userService is defined and lists.service == userService %}
-                    <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
-                {% endif %}
-            {% endfor %}
+            {% if userService2 is defined and userService2 != 'NULL' %}
+                <h2>{{ userService2 }}</h2><br/>
+                {% for lists in list %}
+                    {% if lists.service == userService2 %}
+                        <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>
