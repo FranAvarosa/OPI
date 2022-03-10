@@ -33,13 +33,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $nom;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private $service1;
+    private $service;
 
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: Calendar::class)]
     private $Calendar;
-
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private $service2;
 
     public function __construct()
     {
@@ -140,14 +137,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getService1(): ?string
+    public function getService(): ?string
     {
-        return $this->service1;
+        return $this->service;
     }
 
-    public function setService1(?string $service): self
+    public function setService(?string $service): self
     {
-        $this->service1 = $service1;
+        $this->service = $service;
 
         return $this;
     }
@@ -185,17 +182,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->nom . ' ' .$this->prenom;
-    }
-
-    public function getService2(): ?string
-    {
-        return $this->service2;
-    }
-
-    public function setService2(?string $service2): self
-    {
-        $this->service2 = $service2;
-
-        return $this;
     }
 }

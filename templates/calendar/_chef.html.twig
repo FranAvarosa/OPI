@@ -17,11 +17,11 @@
         <div class="col-4">
             <div class="loggedUser">"Vous êtes connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}"  </div>
             <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
-            {% if userService1 is defined %}
-                <h2>{{ userService1 }}</h2><br/>
+            {% if userService is defined %}
+                <h2>{{ userService }}</h2><br/>
             {% endif %}
             {% for lists in list %}
-                {% if userService1 is defined and lists.service1 == userService1 %}
+                {% if userService is defined and lists.service == userService %}
                     <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
                 {% endif %}
             {% endfor %}
