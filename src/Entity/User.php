@@ -26,6 +26,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\Column(type: 'string')]
+    private $plainPassword;
+
+    #[ORM\Column(type: 'string')]
+    private $salt;
+
+
     #[ORM\Column(type: 'string', length: 255)]
     private $prenom;
 
@@ -33,7 +40,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $nom;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private $service;
+    private $service1;
+
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private $service2;
 
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: Calendar::class)]
     private $Calendar;
@@ -104,13 +114,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+     /**
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword(?string $plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    /**
+     * @param string $salt
+     */
+    public function setSalt(string $salt)
+    {
+        $this->salt = $salt;
+    }
+
     /**
      * @see UserInterface
      */
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getPrenom(): ?string
@@ -137,14 +179,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getService(): ?string
+    public function getService1(): ?string
     {
-        return $this->service;
+        return $this->service1;
     }
 
-    public function setService(?string $service): self
+    public function setService1(?string $service1): self
     {
-        $this->service = $service;
+        $this->service1 = $service1;
+
+        return $this;
+    }
+
+    public function getService2(): ?string
+    {
+        return $this->service2;
+    }
+
+    public function setService2(?string $service2): self
+    {
+        $this->service2 = $service2;
 
         return $this;
     }
