@@ -105,7 +105,7 @@ class MainController extends AbstractController
                 ];
             }
 
-            if($service1 == implode($userArray['service']) || $service2 == implode($userArray['service'])) {
+            if($service1 == implode($userArray['service']) || $service2 == implode($userArray['service']) || $service == $userArray['service']) {
                 $events = $calendar->findBy(['User' => $id]);
 
                 $planning = $this->getPlanningArray($events);
