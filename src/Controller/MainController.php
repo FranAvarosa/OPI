@@ -29,7 +29,11 @@ class MainController extends AbstractController
             $service = $this->getUser()->getService();
 
             $service1 = $service[0];
-            $service2 = $service[1];
+            if(isset($service[1])){
+                $service2 = $service[1];
+            } else {
+                $service2 = '';
+            }
 
             $events = $calendar->findBy(['User' => $userId]);
 
