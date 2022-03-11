@@ -96,7 +96,11 @@ class MainController extends AbstractController
             $service = $this->getUser()->getService();
 
             $service1 = $service[0];
-            $service2 = $service[1];
+            if(isset($service[1])){
+                $service2 = $service[1];
+            } else {
+                $service2 = '';
+            }
 
             // user url id to get a matching user and find its service
             $userCheck = $userRepository->findBy(['id' => $id]);
