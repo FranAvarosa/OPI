@@ -27,6 +27,7 @@ class MainController extends AbstractController
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $userId = $this->getUser()->getId();
             $service = $this->getUser()->getService();
+            list($service1, $service2) = explode(", ", $service); 
             $events = $calendar->findBy(['User' => $userId]);
 
             $planning = $this->getPlanningArray($events);
@@ -35,6 +36,8 @@ class MainController extends AbstractController
                 'planning' => $planning,
                 'list' => $userRepository->findAll(),
                 'userService' => $service,
+                'userService1' => $service1,
+                'userService2' => $service2,
             ]);
         } else {
             return $this->render('security/restricted.html.twig');
@@ -53,7 +56,7 @@ class MainController extends AbstractController
             // if id doesn't exist, return own calendar
             if(empty($idCheck)){
                 $userId = $this->getUser()->getId();
-                $service = $this->getUser()->getService1();
+                $service = $this->getUser()->getService();
                 $events = $calendar->findBy(['User' => $userId]);
 
                 $planning = $this->getPlanningArray($events);
@@ -84,7 +87,7 @@ class MainController extends AbstractController
         // check if current user is chefservice
         if($this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE')){
             $id = $_GET['id'];
-            $service = $this->getUser()->getService1();
+            $service = $this->getUser()->getService();
 
             // user url id to get a matching user and find its service
             $userCheck = $userRepository->findBy(['id' => $id]);
@@ -93,7 +96,7 @@ class MainController extends AbstractController
             foreach($userCheck as $userChecks){
                 $userArray = [
                     'id' => $userChecks->getId(),
-                    'service' => $userChecks->getService1(),
+                    'service' => $userChecks->getService(),
                 ];
             }
 

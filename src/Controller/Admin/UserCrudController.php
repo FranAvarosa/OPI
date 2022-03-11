@@ -40,16 +40,7 @@ class UserCrudController extends AbstractCrudController
                 ->setFormType(PasswordType::class)
                 ->setRequired($pageName === Crud::PAGE_NEW)
                 ->onlyOnForms(),
-            ChoiceField::new('service1', 'Service 1')->setChoices([
-                'Quartier De Neuhof' => 'Quartier De Neuhof',
-                'Quartier Cité de l\'Ill' => 'Quartier Cité de l\'Ill',
-                'Quartier De Koenigshoffen' => 'Quartier De Koenigshoffen',
-                'Quartier Montagne Verte' => 'Quartier Montagne Verte',
-                'Quartier Ampère - Port du Rhin' => 'Quartier Ampère - Port du Rhin',
-                'Quartier De l\'Elsau' => 'Quartier De l\'Elsau',
-                'Equipe Focale' => 'Equipe Focale',
-            ]),
-            ChoiceField::new('service2', 'Service 2')->setChoices([
+            ChoiceField::new('service', 'Service')->allowMultipleChoices()->setChoices([
                 'Quartier De Neuhof' => 'Quartier De Neuhof',
                 'Quartier Cité de l\'Ill' => 'Quartier Cité de l\'Ill',
                 'Quartier De Koenigshoffen' => 'Quartier De Koenigshoffen',

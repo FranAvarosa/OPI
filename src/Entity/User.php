@@ -32,18 +32,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $salt;
 
-
     #[ORM\Column(type: 'string', length: 255)]
     private $prenom;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private $service1;
-
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private $service2;
+    #[ORM\Column(type: 'simple_array')]
+    private $service;
 
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: Calendar::class)]
     private $Calendar;
@@ -183,26 +179,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getService1(): ?string
+    public function getService(): ?array
     {
-        return $this->service1;
+        return $this->service;
     }
 
-    public function setService1(?string $service1): self
+    public function setService(?array $service): self
     {
-        $this->service1 = $service1;
-
-        return $this;
-    }
-
-    public function getService2(): ?string
-    {
-        return $this->service2;
-    }
-
-    public function setService2(?string $service2): self
-    {
-        $this->service2 = $service2;
+        $this->service = $service;
 
         return $this;
     }
