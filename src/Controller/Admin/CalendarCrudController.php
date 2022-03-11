@@ -27,7 +27,7 @@ class CalendarCrudController extends AbstractCrudController
             TextField::new('title', 'Sujet'),
             DateTimeField::new('start', 'Heure de début'),
             TimeField::new('end', 'Heure de fin'),
-            TextEditorField::new('description'),
+            TextField::new('description'),
             ChoiceField::new('category', 'Categorie')->setChoices([
                 'En Attente' => 'En Attente',
                 'Arrêt Maladie' => 'Arrêt Maladie',
