@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Repository\CalendarRepository;
 use App\Repository\DefaultRepository;
-use App\Repository\ServiceRepository;
 use App\Repository\UserRepository;
 use ContainerE4xO03e\getMaker_PhpCompatUtilService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -22,7 +21,7 @@ use function Symfony\Component\Mime\toString;
 class MainController extends AbstractController
 {
     #[Route('/', name: 'main')]
-    public function index(CalendarRepository $calendar, UserRepository $userRepository, ServiceRepository $serviceRepository): Response
+    public function index(CalendarRepository $calendar, UserRepository $userRepository): Response
     {
         // check if logged in
         $securityContext = $this->container->get('security.authorization_checker');
@@ -30,7 +29,7 @@ class MainController extends AbstractController
             $userId = $this->getUser()->getId();
             $service = $this->getUser()->getService();
 
-            list($service1, $service2) = explode(", ", $service);
+            list($service1, $service2) = explode(",", $service);
 
             $events = $calendar->findBy(['User' => $userId]);
 
