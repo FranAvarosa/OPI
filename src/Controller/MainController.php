@@ -27,13 +27,7 @@ class MainController extends AbstractController
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $userId = $this->getUser()->getId();
             $service = $this->getUser()->getService();
-<<<<<<< HEAD
             list($service1, $service2) = implode(",", $service); 
-=======
-
-            list($service1, $service2) = explode(",", $service);
-
->>>>>>> e40e452239f46a09dd5c165f3e1e0e4a9be16604
             $events = $calendar->findBy(['User' => $userId]);
 
             $planning = $this->getPlanningArray($events);

@@ -34,8 +34,8 @@ class UserCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             EmailField::new('email'),
-            TextEditorField::new('nom'),
-            TextEditorField::new('prenom'),
+            TextField::new('nom'),
+            TextField::new('prenom'),
             TextField::new('plainPassword', 'password')
                 ->setFormType(PasswordType::class)
                 ->setRequired($pageName === Crud::PAGE_NEW)
