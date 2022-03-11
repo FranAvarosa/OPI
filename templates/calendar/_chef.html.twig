@@ -20,18 +20,18 @@
 
             <a href="{{ path('main_chef', {'id': app.user.id}) }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/>
 
-            {% if userService1 is defined and userService1 != 'NULL' %}
+            {% if userService1 is defined %}
                 <h2>{{ userService1 }}</h2><br/>
                 {% for lists in list %}
-                    {% if lists.service == userService1 %}
+                    {% if lists.service[0] == userService1 and app.user.id != lists.id %}
                         <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            {% if userService2 is defined and userService2 != 'NULL' %}
+            {% if userService2 is defined %}
                 <h2>{{ userService2 }}</h2><br/>
                 {% for lists in list %}
-                    {% if lists.service == userService2 %}
+                    {% if lists.service[0] == userService2 and app.user.id != lists.id %}
                         <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
                     {% endif %}
                 {% endfor %}

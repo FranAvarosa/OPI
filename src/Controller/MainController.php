@@ -27,13 +27,10 @@ class MainController extends AbstractController
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $userId = $this->getUser()->getId();
             $service = $this->getUser()->getService();
-<<<<<<< HEAD
-            list($service1, $service2) = implode(",", $service); 
-=======
 
-            list($service1, $service2) = explode(",", $service);
+            $service1 = $service[0];
+            $service2 = $service[1];
 
->>>>>>> e40e452239f46a09dd5c165f3e1e0e4a9be16604
             $events = $calendar->findBy(['User' => $userId]);
 
             $planning = $this->getPlanningArray($events);
@@ -41,7 +38,6 @@ class MainController extends AbstractController
             return $this->render('main/index.html.twig', [
                 'planning' => $planning,
                 'list' => $userRepository->findAll(),
-                'userService' => $service,
                 'userService1' => $service1,
                 'userService2' => $service2,
             ]);
@@ -95,6 +91,9 @@ class MainController extends AbstractController
             $id = $_GET['id'];
             $service = $this->getUser()->getService();
 
+            $service1 = $service[0];
+            $service2 = $service[1];
+
             // user url id to get a matching user and find its service
             $userCheck = $userRepository->findBy(['id' => $id]);
 
@@ -106,7 +105,7 @@ class MainController extends AbstractController
                 ];
             }
 
-            if($service == $userArray['service']) {
+            if($service1 == implode($userArray['service']) || $service2 == implode($userArray['service'])) {
                 $events = $calendar->findBy(['User' => $id]);
 
                 $planning = $this->getPlanningArray($events);
@@ -115,7 +114,8 @@ class MainController extends AbstractController
                     'planning' => $planning,
                     'list' => $userRepository->findAll(),
                     'calId' => $id,
-                    'userService' => $service,
+                    'userService1' => $service1,
+                    'userService2' => $service2,
                 ]);
             } else {
                 return $this->render('security/restricted.html.twig');
