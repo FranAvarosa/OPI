@@ -53,7 +53,7 @@ class MainController extends AbstractController
             // if id doesn't exist, return own calendar
             if(empty($idCheck)){
                 $userId = $this->getUser()->getId();
-                $service = $this->getUser()->getService();
+                $service = $this->getUser()->getService1();
                 $events = $calendar->findBy(['User' => $userId]);
 
                 $planning = $this->getPlanningArray($events);
@@ -84,7 +84,7 @@ class MainController extends AbstractController
         // check if current user is chefservice
         if($this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE')){
             $id = $_GET['id'];
-            $service = $this->getUser()->getService();
+            $service = $this->getUser()->getService1();
 
             // user url id to get a matching user and find its service
             $userCheck = $userRepository->findBy(['id' => $id]);
@@ -93,7 +93,7 @@ class MainController extends AbstractController
             foreach($userCheck as $userChecks){
                 $userArray = [
                     'id' => $userChecks->getId(),
-                    'service' => $userChecks->getService(),
+                    'service' => $userChecks->getService1(),
                 ];
             }
 

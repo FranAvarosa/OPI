@@ -26,6 +26,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\Column(type: 'string')]
+    private $plainPassword;
+
+    #[ORM\Column(type: 'string')]
+    private $salt;
+
+
     #[ORM\Column(type: 'string', length: 255)]
     private $prenom;
 
@@ -33,14 +40,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $nom;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private $service;
+    private $service1;
+
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private $service2;
 
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: Calendar::class)]
     private $Calendar;
 
+    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: Service::class)]
+    private $serviceId;
+
     public function __construct()
     {
         $this->Calendar = new ArrayCollection();
+        $this->serviceId = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -104,13 +118,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+     /**
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword(?string $plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    /**
+     * @param string $salt
+     */
+    public function setSalt(string $salt)
+    {
+        $this->salt = $salt;
+    }
+
     /**
      * @see UserInterface
      */
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getPrenom(): ?string
@@ -137,14 +183,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getService(): ?string
+    public function getService1(): ?string
     {
-        return $this->service;
+        return $this->service1;
     }
 
-    public function setService(?string $service): self
+    public function setService1(?string $service1): self
     {
-        $this->service = $service;
+        $this->service1 = $service1;
+
+        return $this;
+    }
+
+    public function getService2(): ?string
+    {
+        return $this->service2;
+    }
+
+    public function setService2(?string $service2): self
+    {
+        $this->service2 = $service2;
 
         return $this;
     }
@@ -182,5 +240,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->nom . ' ' .$this->prenom;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServiceId(): Collection
+    {
+        return $this->serviceId;
+    }
+
+    public function addServiceId(Service $serviceId): self
+    {
+        if (!$this->serviceId->contains($serviceId)) {
+            $this->serviceId[] = $serviceId;
+            $serviceId->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceId(Service $serviceId): self
+    {
+        if ($this->serviceId->removeElement($serviceId)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceId->getUserId() === $this) {
+                $serviceId->setUserId(null);
+            }
+        }
+
+        return $this;
     }
 }
