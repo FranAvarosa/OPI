@@ -46,7 +46,7 @@ class UserCrudController extends AbstractCrudController
                 'Quartier de Koenigshoffen' => 'Quartier de Koenigshoffen',
                 'Quartier Montagne Verte' => 'Quartier Montagne Verte',
                 'Quartier Ampère - Port du Rhin' => 'Quartier Ampère - Port du Rhin',
-                'Quartier de l\'Elsau' => 'Quartier De l\'Elsau',
+                'Quartier de l\'Elsau' => 'Quartier de l\'Elsau',
                 'Equipe Focale' => 'Equipe Focale',
             ]),
         ];
