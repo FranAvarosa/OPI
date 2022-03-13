@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="headerplanning container-fluid">
     <div class="row justify-content-end text-center">
         <div class="col-3">
         </div>
@@ -29,32 +29,20 @@
     </div>
 </div>
 <br />
-<div class="grid">
-    <div id="calendrier">
-    </div>
-    <div class="listeemploye">
-        <h3> Liste des plannings </h3>
-        <ul>
-        {% for lists in list %}
-            <li><a class="lienlisteemploye" href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
-        {% endfor %}
-        </ul>
-    </div>
-    <br />
-</div>
 <div class="container-fluid">
-    <div class="row justify-content-end text-center">
-        <div id="totalOfHoursInYear" class="col-4">
-            <div class="h2 colorChange">
-                <h2>Total de l'année : <span class="hourHolder"></span> H</h2>
+    <div class="row justify-content-end">
+        <div class="decompteheure col-3">
+            <div id="totalOfHoursInYear">
+                <div class="h2 colorChange">
+                    <h2>Total de l'année : <span class="hourHolder"></span> H</h2>
+                </div>
+                <div class="h2">
+                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                </div>
+                <div id="extraHourByCategoriesYear">
+                    <!-- generated loop of categories goes here -->
+                </div>
             </div>
-            <div class="h2">
-                <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
-            </div>
-            <div id="extraHourByCategoriesYear">
-                <!-- generated loop of categories goes here -->
-            </div>
-        </div>
         {#        <div id="totalOfHoursInMonth" class="col-4">#}
         {#            <div class="h2 colorChange">#}
         {#                Total du mois : <span class="hourHolder"></span>  H#}
@@ -66,23 +54,32 @@
         {#                <!-- generated loop of categories goes here -->#}
         {#            </div>#}
         {#        </div>#}
-        <div id="totalOfHoursInWeek" class="col-4">
-            <div class="h2 colorChange">
-                <h2>Total de la semaine : <span class="hourHolder"></span> H</h2>
+            <div id="totalOfHoursInWeek">
+                <div class="h2 colorChange">
+                    <h2>Total de la semaine : <span class="hourHolder"></span> H</h2>
+                </div>
+                <div class="h3">
+                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                </div>
+                <div id="extraHourByCategoriesWeek">
+                    <!-- generated loop of categories goes here -->
+                </div>
             </div>
-            <div class="h3">
-                <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
-            </div>
-            <div id="extraHourByCategoriesWeek">
-                <!-- generated loop of categories goes here -->
+            <div id="totalByCategories">
+                <div class="h3">
+                    <span class="hourByCategoryHolder"></span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row justify-content-center text-center">
-        <div id="totalByCategories" class="col-4">
-            <div class="h3">
-                <span class="hourByCategoryHolder"></span>
-            </div>
+        <div id="calendrier" class="col-7">
+        </div>
+        <div class="col-2 listeemploye">
+            <h3> Liste des plannings </h3>
+            <ul>
+            {% for lists in list %}
+                <li><a class="lienlisteemploye" href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
+            {% endfor %}
+            </ul>
         </div>
     </div>
 </div>

@@ -11,6 +11,10 @@ header{
     place-items: center;
 }
 
+.headerplanning{
+    margin-bottom: 5%;
+}
+
 .navbar{
     display: block;
     height: 2rem;
@@ -55,13 +59,29 @@ header{
     grid-auto-flow: row;
 }
 
-#calendrier {
-    width: 80%;
-    margin: auto;
+.decompteheure{
+    margin-top: 3%;
+}
+
+.listeemploye{
+    margin-top: 3%;
 }
 
 .loggedUser{
     font-size: 20px;
+}
+
+#calendar_description{
+    padding-bottom: 6rem;
+}
+
+#calendar_start_date{
+    width:auto;
+    margin-bottom: 2%;
+}
+
+.input-group{
+    width: auto;
 }
 
 .lienlisteemploye,
