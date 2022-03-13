@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Calendar;
+use App\EventSubscriber\EasyAdminSubscriber;
 use App\Repository\CalendarRepository;
+use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,94 +26,16 @@ class CalendarCrudController extends AbstractCrudController
         return Calendar::class;
     }
 
-    public function createCalendar(Request $request, EntityManagerInterface $entityManager, CalendarRepository $calendar): Response
-    {
-
-            $calendar = new Calendar();
-            $form = $this->createForm(CalendarType::class, $calendar);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                // add start's day to end's time
-                $date1 = $calendar->getStart();
-                $date1Ymd = $calendar->getStart()->format('Y-m-d');
-                $date2His = $calendar->getEnd()->format('H:i:s');
-                $dateString = $date1Ymd . ' ' . $date2His;
-                $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
-
-                // check if end is not before start
-                if ($dateEnd > $date1) {
-                    $category = $calendar->getCategory();
-                    $this->setBackgroundColors($category, $calendar);
-
-                    $calendar->setUser($this->getUser());
-                    $calendar->setEnd($dateEnd);
-                    $entityManager->persist($calendar);
-                    $entityManager->flush();
-                }
-            }
-            $user = AssociationField::new('User', 'À qui voulez vous attribuer cette tâche ?');
-            return $this->renderForm('calendar/new.html.twig', [
-                'calendar' => $calendar,
-                'form' => $form,
-            ]);
-    }
-
-    function setBackgroundColors($category, $calendar){
-        switch ($category) {
-            case "En attente":
-                $calendar->setBackgroundColor('#CCCCFF');
-                break;
-            case "Arrêt Maladie":
-            case "Jour férié":
-            case "CT":
-            case "CA":
-            case "Absence":
-            case "Action Institution et partenariat":
-            case "Présence sociale":
-                $calendar->setBackgroundColor('#FFCCCC');
-                break;
-            case "DP":
-                $calendar->setBackgroundColor('#FF9900');
-                break;
-            case "TA COMPT":
-                $calendar->setBackgroundColor('#6666CC');
-                break;
-            case "AEP":
-                $calendar->setBackgroundColor('#9999FF');
-                break;
-            case "Evaluation":
-                $calendar->setBackgroundColor('#FF6666');
-                break;
-            case "Formation":
-                $calendar->setBackgroundColor('#33CCFF');
-                break;
-            case "Coordination et préparation":
-                $calendar->setBackgroundColor('#CC9933');
-                break;
-            case "Animation éducative et sociale":
-                $calendar->setBackgroundColor('#ECE9D8');
-                break;
-            case "Travail de rue":
-                $calendar->setBackgroundColor('#00CCCC');
-                break;
-            case "Présence sociale hors local":
-                $calendar->setBackgroundColor('#99CFD8');
-                break;
-            default:
-                $calendar->setBackgroundColor("#CCCCFF");
-        }
-    }
-
+    
     public function configureFields(string $pageName): iterable
     {
-
-        $id = IdField::new('id')->hideOnForm();
-        $sujet = TextField::new('title', 'Sujet');
-        $start = DateTimeField::new('start', 'Heure de début');
-        $end = TimeField::new('end', 'Heure de fin');
-        $description = TextField::new('description');
-        $category = ChoiceField::new('category', 'Categorie')->setChoices([
+        return[
+        IdField::new('id')->hideOnForm(),
+        TextField::new('title', 'Sujet'),
+        DateTimeField::new('start', 'Heure de début'),
+        DateTimeField::new('end', 'Heure de fin'),
+        TextField::new('description'),
+        ChoiceField::new('category', 'Categorie')->setChoices([
             'En Attente' => 'En Attente',
             'Arrêt Maladie' => 'Arrêt Maladie',
             'Jour férié' => 'Jour férié',
@@ -129,10 +53,28 @@ class CalendarCrudController extends AbstractCrudController
             'Travail de rue' => 'Travail de rue',
             'Présence sociale' => 'Presence sociale',
             'Présence sociale hors local' => 'Presence sociale hors local',
-        ]);
-        $user = AssociationField::new('User', 'À qui voulez vous attribuer cette tâche ?');
-
-        return [ $id, $sujet, $start, $end, $description, $category, $user];
+        ]),
+        ChoiceField::new('background_color', 'Confirmer la categorie')->setChoices([
+            'En Attente' => '#CCCCFF',
+            'Arrêt Maladie' => '#FFCCCC',
+            'Jour férié' => '#FFCCCC',
+            'CT' => '#FFCCCC',
+            'CA' => '#FFCCCC',
+            'DP' => '#FF9900',
+            'TA COMPT' => '#6666CC',
+            'AEP' => '#9999FF',
+            'Absence' => '#FFCCCC',
+            'Evaluation' => '#FF6666',
+            'Formation' => '#33CCFF',
+            'Coordination et préparation' => '#CC9933',
+            'Action Institution et partenariat' => '#FFCCCC',
+            'Animation éducative et sociale' => '#ECE9D8',
+            'Travail de rue' => '#00CCCC',
+            'Présence sociale' => '#FFCCCC',
+            'Présence sociale hors local' => '#99CFD8',
+        ]),
+        AssociationField::new('User', 'À qui voulez vous attribuer cette tâche ?'),
+        ];
     }
 
 }
