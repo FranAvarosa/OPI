@@ -3,8 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
@@ -12,6 +14,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserCrudController extends AbstractCrudController
@@ -28,7 +32,6 @@ class UserCrudController extends AbstractCrudController
         $this->passwordEncoder = $passwordEncoder;
     }
 
-    
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -36,17 +39,17 @@ class UserCrudController extends AbstractCrudController
             EmailField::new('email'),
             TextField::new('nom'),
             TextField::new('prenom'),
-            TextField::new('plainPassword', 'password')
+            TextField::new('plainPassword', 'Nouveau mot de passe')
                 ->setFormType(PasswordType::class)
                 ->setRequired($pageName === Crud::PAGE_NEW)
                 ->onlyOnForms(),
             ChoiceField::new('service', 'Service')->allowMultipleChoices()->setChoices([
-                'Quartier De Neuhof' => 'Quartier De Neuhof',
-                'Quartier Cité de l\'Ill' => 'Quartier Cité de l\'Ill',
-                'Quartier De Koenigshoffen' => 'Quartier De Koenigshoffen',
+                'Quartier de Neuhof' => 'Quartier de Neuhof',
+                'Quartier Cité de l\'Ill - Guirbarden' => 'Quartier Cité de l\'Ill - Guirbarden',
+                'Quartier de Koenigshoffen' => 'Quartier de Koenigshoffen',
                 'Quartier Montagne Verte' => 'Quartier Montagne Verte',
                 'Quartier Ampère - Port du Rhin' => 'Quartier Ampère - Port du Rhin',
-                'Quartier De l\'Elsau' => 'Quartier De l\'Elsau',
+                'Quartier de l\'Elsau' => 'Quartier de l\'Elsau',
                 'Equipe Focale' => 'Equipe Focale',
             ]),
         ];

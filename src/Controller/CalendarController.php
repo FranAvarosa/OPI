@@ -69,17 +69,23 @@ class CalendarController extends AbstractController
             // get current user infos
             $currentUserId = $this->getUser()->getId();
             $currentUserService = $this->getUser()->getService();
+            $service1 = $currentUserService[0];
+            if(isset($currentUserService[1])){
+                $service2 = $currentUserService[1];
+            } else {
+                $service2 = '';
+            }
 
             // get event infos
             $attachedUserId = $calendar->getUser()->getId();
-            $attachedUserService = $calendar->getUser()->getService();
+            $attachedUserService = implode($calendar->getUser()->getService());
 
             // check current user role
             $roleCheckerChef = $this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE');
             $roleCheckerAdmin = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
 
             // check if current user is allowed to edit
-            if ($roleCheckerAdmin or $currentUserId == $attachedUserId or $currentUserService == $attachedUserService and $roleCheckerChef) {
+            if ($roleCheckerAdmin or $currentUserId == $attachedUserId or $service1 == $attachedUserService and $roleCheckerChef or $service2 == $attachedUserService and $roleCheckerChef or $currentUserService == $attachedUserService and $roleCheckerChef) {
                 $form = $this->createForm(CalendarType::class, $calendar);
                 $form->handleRequest($request);
 
