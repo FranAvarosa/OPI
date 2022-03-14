@@ -44,7 +44,7 @@
 
         window.onload = () => {
             let totalOfHoursInYearHolder = document.getElementById('totalOfHoursInYear');
-            // let totalOfHoursInMonthHolder = document.getElementById('totalOfHoursInMonth');
+            let totalOfHoursInMonthHolder = document.getElementById('totalOfHoursInMonth');
             let totalOfHoursInWeekHolder = document.getElementById('totalOfHoursInWeek');
             let calendarEvents = [];
             let calendarEl = document.querySelector("#calendrier");
@@ -111,32 +111,32 @@
                 return hoursInCurrentWeek;
             }
 
-            // function getHourInCurrentMonth(durations, currentDate, monthStart) {
-            //     let hourInCurrentMonth = [];
-            //
-            //     for (let i = 0; i <= currentDate.daysInMonth() - 1; i++) {
-            //         for (let duration of durations) {
-            //             let daysHours = duration[moment(monthStart).add(i, 'days').format("YYYY-MM-DD")];
-            //             let extraHours = duration.extraTime;
-            //
-            //             if (daysHours !== undefined) {
-            //                 daysHours = (parseInt(daysHours) / 60);
-            //                 extraHours = (parseInt(extraHours) / 60);
-            //
-            //                 let category = hourInCurrentMonth.filter(element => element.categoryName === duration.category);
-            //
-            //                 if (category.length > 0) {
-            //                     category[0].numberOfHours += daysHours;
-            //                     category[0].numberOfExtraHours += extraHours;
-            //                 } else {
-            //                     hourInCurrentMonth.push(new CategoryData(duration.category, daysHours, extraHours))
-            //                 }
-            //             }
-            //         }
-            //     }
-            //
-            //     return hourInCurrentMonth;
-            // }
+            function getHourInCurrentMonth(durations, currentDate, monthStart) {
+                let hourInCurrentMonth = [];
+
+                for (let i = 0; i <= currentDate.daysInMonth() - 1; i++) {
+                    for (let duration of durations) {
+                        let daysHours = duration[moment(monthStart).add(i, 'days').format("YYYY-MM-DD")];
+                        let extraHours = duration.extraTime;
+
+                        if (daysHours !== undefined) {
+                            daysHours = (parseInt(daysHours) / 60);
+                            extraHours = (parseInt(extraHours) / 60);
+
+                            let category = hourInCurrentMonth.filter(element => element.categoryName === duration.category);
+
+                            if (category.length > 0) {
+                                category[0].numberOfHours += daysHours;
+                                category[0].numberOfExtraHours += extraHours;
+                            } else {
+                                hourInCurrentMonth.push(new CategoryData(duration.category, daysHours, extraHours))
+                            }
+                        }
+                    }
+                }
+
+                return hourInCurrentMonth;
+            }
 
             function getHourInCurrentYear(durations, yearStart, yearEnd) {
                 let hourInCurrentYear = [];
@@ -172,14 +172,14 @@
             function getNumberOfHours(currentDate, durations) {
                 let weekStart = currentDate.clone().startOf('isoweek');
 
-                // let monthStart = currentDate.startOf('month').format();
+                let monthStart = currentDate.startOf('month').format();
 
                 let yearStart = currentDate.startOf('year').format();
                 let yearEnd = currentDate.endOf('year').format();
 
                 let hoursInCurrentWeek = getHourInCurrentWeek(durations, weekStart);
                 let hoursInCurrentYear = getHourInCurrentYear(durations, yearStart, yearEnd);
-                // let hoursInCurrentMonth = getHourInCurrentMonth(durations, currentDate, monthStart);
+                let hoursInCurrentMonth = getHourInCurrentMonth(durations, currentDate, monthStart);
 
                 // Week
                 document.getElementById('extraHourByCategoriesWeek').innerHTML = '';
@@ -203,26 +203,26 @@
                 totalOfHoursInWeekHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = parseFloat(totalOfExtraHoursInWeek.toFixed(1));
 
                 // Month
-                // document.getElementById('extraHourByCategoriesMonth').innerHTML = '';
-                //
-                // let totalOfHoursInMonth = 0;
-                // let totalOfExtraHoursInMonth = 0;
-                //
-                // for (let hourInCurrentMonth of hoursInCurrentMonth) {
-                //     totalOfHoursInMonth += hourInCurrentMonth.numberOfHours;
-                //     totalOfHoursInMonth += hourInCurrentMonth.numberOfExtraHours;
-                //     totalOfExtraHoursInMonth += hourInCurrentMonth.numberOfExtraHours;
-                //
-                //     let newDiv = document.createElement("div");
-                //     newDiv.innerHTML =
-                //         '<h3>' + hourInCurrentMonth.categoryName + ' : ' +
-                //         parseFloat((hourInCurrentMonth.numberOfHours + hourInCurrentMonth.numberOfExtraHours).toFixed(1)) + ' H</h3>';
-                //
-                //     document.getElementById('extraHourByCategoriesMonth').appendChild(newDiv);
-                // }
-                //
-                // totalOfHoursInMonthHolder.getElementsByClassName('hourHolder')[0].innerHTML = parseFloat(totalOfHoursInMonth.toFixed(1));
-                // totalOfHoursInMonthHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = parseFloat(totalOfExtraHoursInMonth.toFixed(1));
+                document.getElementById('extraHourByCategoriesMonth').innerHTML = '';
+
+                let totalOfHoursInMonth = 0;
+                let totalOfExtraHoursInMonth = 0;
+
+                for (let hourInCurrentMonth of hoursInCurrentMonth) {
+                    totalOfHoursInMonth += hourInCurrentMonth.numberOfHours;
+                    totalOfHoursInMonth += hourInCurrentMonth.numberOfExtraHours;
+                    totalOfExtraHoursInMonth += hourInCurrentMonth.numberOfExtraHours;
+
+                    let newDiv = document.createElement("div");
+                    newDiv.innerHTML =
+                        '<h3>' + hourInCurrentMonth.categoryName + ' : ' +
+                        parseFloat((hourInCurrentMonth.numberOfHours + hourInCurrentMonth.numberOfExtraHours).toFixed(1)) + ' H</h3>';
+
+                    document.getElementById('extraHourByCategoriesMonth').appendChild(newDiv);
+                }
+
+                totalOfHoursInMonthHolder.getElementsByClassName('hourHolder')[0].innerHTML = parseFloat(totalOfHoursInMonth.toFixed(1));
+                totalOfHoursInMonthHolder.getElementsByClassName('extraHourHolder')[0].innerHTML = parseFloat(totalOfExtraHoursInMonth.toFixed(1));
 
                 // Year
                 document.getElementById('extraHourByCategoriesYear').innerHTML = '';
@@ -248,14 +248,14 @@
                 // manage block display
                 if(calendar.view.type === 'dayGridMonth'){
                     totalOfHoursInWeekHolder.style.display = 'none';
-                    // totalOfHoursInMonthHolder.style.display = 'block';
+                    totalOfHoursInMonthHolder.style.display = 'block';
                     totalOfHoursInYearHolder.style.display = 'block';
                     if (totalOfHoursInYearHolder.dataset.role === 'isNotAdmin') {
                         totalOfHoursInYearHolder.style.display = 'none';
                     }
                 } else {
                     totalOfHoursInWeekHolder.style.display = 'block';
-                    // totalOfHoursInMonthHolder.style.display = 'none';
+                    totalOfHoursInMonthHolder.style.display = 'none';
                     totalOfHoursInYearHolder.style.display = 'none';
                 }
             }

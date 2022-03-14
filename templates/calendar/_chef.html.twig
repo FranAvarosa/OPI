@@ -36,17 +36,17 @@
                     <!-- generated loop of categories goes here -->
                 </div>
             </div>
-{#        <div id="totalOfHoursInMonth" class="col-4">#}
-{#            <div class="h2 colorChange">#}
-{#                Total du mois : <span class="hourHolder"></span>  H#}
-{#            </div>#}
-{#            <div class="h3">#}
-{#                <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>#}
-{#            </div>#}
-{#            <div id="extraHourByCategoriesMonth">#}
-{#                <!-- generated loop of categories goes here -->#}
-{#            </div>#}
-{#        </div>#}
+            <div id="totalOfHoursInMonth">
+                <div class="h2 colorChange">
+                    Total du mois : <span class="hourHolder"></span>  H
+                </div>
+                <div class="h2">
+                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                </div>
+                <div id="extraHourByCategoriesMonth">
+                    <!-- generated loop of categories goes here -->
+                </div>
+            </div>
             <div id="totalOfHoursInWeek">
                 <div class="h2 colorChange">
                     <h2>Total de la semaine : <span class="hourHolder"></span> H</h2>
@@ -69,15 +69,16 @@
         <div class="col-2 listeemploye">
             <h3> Liste des plannings </h3>
             {% if userService1 is defined %}
-                <h2>{{ userService1 }}</h2><br/>
+                <h2>{{ userService1 }}</h2>
                 {% for lists in list %}
                     {% if lists.service[0] == userService1 and app.user.id != lists.id %}
                         <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
                     {% endif %}
                 {% endfor %}
             {% endif %}
+            <br/>
             {% if userService2 is defined %}
-                <h2>{{ userService2 }}</h2><br/>
+                <h2>{{ userService2 }}</h2>
                 {% for lists in list %}
                     {% if lists.service[0] == userService2 and app.user.id != lists.id %}
                         <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
