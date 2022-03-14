@@ -59,9 +59,9 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::section('Utilisateur');
 
-        yield MenuItem::subMenu('Gestion employé', 'fas fa-bars')->setSubItems([
-            MenuItem::linkToCrud('Ajouter un employé', 'fas fa-plus', User::class)->setAction(Crud::PAGE_NEW),
-            MenuItem::linkToCrud('Liste des employé', 'fas fa-eye', User::class)
+        yield MenuItem::subMenu('Gestion employés', 'fas fa-bars')->setSubItems([
+            MenuItem::linkToCrud('Ajouter un employés', 'fas fa-plus', User::class)->setAction(Crud::PAGE_NEW),
+            MenuItem::linkToCrud('Liste des employés', 'fas fa-eye', User::class)
         ]);
 
         yield MenuItem::section('Evenement');
@@ -69,6 +69,7 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::subMenu('Gestion Evenement', 'fas fa-bars')->setSubItems([
             MenuItem::linkToCrud('Ajouter un Evenement', 'fas fa-plus', Calendar::class)->setAction(Crud::PAGE_NEW),
+            MenuItem::linkToCrud('Liste des Evenement', 'fas fa-eye', Calendar::class)
         ]);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }

@@ -1,8 +1,8 @@
-<div class="container-fluid">
+<div class="headerplanning container-fluid">
     <div class="row justify-content-end text-center">
-        <div class="col-4">
+        <div class="col-3">
         </div>
-        <div class="col-4">
+        <div class="col-6">
             <div class="h1">
                 {% if calId is not defined %}
                     Planning de {{ app.user.prenom }} {{ app.user.nom }}
@@ -14,39 +14,72 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-3">
+          <p class="loggedUser">"Vous êtes connecté en tant que <b>{{ app.user.prenom }} {{ app.user.nom }}"</b></p>
+          <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+          <a href="{{ path('admin') }}" class="btn btn-primary" target="_blank">Espace Administrateur</a>
+        </div>
+        {# <div class="col-4">
             <div class="loggedUser">"Vous êtes connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}"  </div>
             <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
             {% for lists in list %}
                 <a href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
             {% endfor %}
-        </div>
+        </div> #}
     </div>
-</div>
-<br />
-<div id="calendrier">
 </div>
 <br />
 <div class="container-fluid">
-    <div class="row justify-content-center text-center">
-        <div id="totalOfHoursInYear" class="col-4">
-            <div class="h2">
-                Total de l'année : <span class="hourHolder"></span>
+    <div class="row justify-content-end">
+        <div class="decompteheure col-3">
+            <div id="totalOfHoursInYear">
+                <div class="h2 colorChange">
+                    <h2>Total de l'année : <span class="hourHolder"></span> H</h2>
+                </div>
+                <div class="h2">
+                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                </div>
+                <div id="extraHourByCategoriesYear">
+                    <!-- generated loop of categories goes here -->
+                </div>
+            </div>
+        {#        <div id="totalOfHoursInMonth" class="col-4">#}
+        {#            <div class="h2 colorChange">#}
+        {#                Total du mois : <span class="hourHolder"></span>  H#}
+        {#            </div>#}
+        {#            <div class="h3">#}
+        {#                <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>#}
+        {#            </div>#}
+        {#            <div id="extraHourByCategoriesMonth">#}
+        {#                <!-- generated loop of categories goes here -->#}
+        {#            </div>#}
+        {#        </div>#}
+            <div id="totalOfHoursInWeek">
+                <div class="h2 colorChange">
+                    <h2>Total de la semaine : <span class="hourHolder"></span> H</h2>
+                </div>
+                <div class="h3">
+                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                </div>
+                <div id="extraHourByCategoriesWeek">
+                    <!-- generated loop of categories goes here -->
+                </div>
+            </div>
+            <div id="totalByCategories">
+                <div class="h3">
+                    <span class="hourByCategoryHolder"></span>
+                </div>
             </div>
         </div>
-        <div id="totalOfHoursInMonth" class="col-4">
-            <div class="h2">
-                Total du mois : <span class="hourHolder"></span>
-            </div>
+        <div id="calendrier" class="col-7">
         </div>
-        <div id="totalOfHoursInWeek" class="col-4">
-            <div class="h2">
-                Total heures de la semaine : <span class="hourHolder"></span>
-            </div>
-            <div class="h2">
-                Soir et week-end : <span class="extraHourHolder"></span>
-            </div>
+        <div class="col-2 listeemploye">
+            <h3> Liste des plannings </h3>
+            <ul>
+            {% for lists in list %}
+                <li><a class="lienlisteemploye" href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
+            {% endfor %}
+            </ul>
         </div>
     </div>
 </div>
-

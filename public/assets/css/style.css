@@ -1,10 +1,18 @@
+body{
+    background-color: aliceblue;
+}
 header{
-    width: 100%;   
+    width: 100%;
+    background-color: #fff; 
 }
 
 .header_top{
     display: grid;
     place-items: center;
+}
+
+.headerplanning{
+    margin-bottom: 5%;
 }
 
 .navbar{
@@ -44,9 +52,45 @@ header{
     cursor: pointer;
 }
 
-#calendrier {
-    width: 60%;
-    margin: auto;
+.grid{
+    display: grid;
+    grid-template-columns: 80% 20%;
+    grid-template-rows: 80% 20%;
+    grid-auto-flow: row;
+}
+
+.decompteheure{
+    margin-top: 3%;
+}
+
+.listeemploye{
+    margin-top: 3%;
+}
+
+.loggedUser{
+    font-size: 20px;
+}
+
+#calendar_description{
+    padding-bottom: 6rem;
+}
+
+#calendar_start_date{
+    width:auto;
+    margin-bottom: 2%;
+}
+
+.input-group{
+    width: auto;
+}
+
+.lienlisteemploye,
+.lienlisteemploye:hover,
+.lienlisteemploye:visited
+.lienlisteemploye:focus{
+    color:#2C3E50;
+    outline: none;
+    text-decoration: none;
 }
 
 .fc-theme-standard .fc-scrollgrid {
@@ -58,5 +102,9 @@ header{
 }
 
 .fc-col-header-cell-cushion {
+    color: #2C3E50;
+}
+
+.colorChange {
     color: #2C3E50;
 }
