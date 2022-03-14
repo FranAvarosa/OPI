@@ -6,6 +6,7 @@
             <div class="h1">Bonjour {{ app.user.prenom }} {{ app.user.nom }}</div>
         </div>
         <div class="col-4">
+            <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a><br />
         </div>
     </div>
 </div>
@@ -14,7 +15,6 @@
 <div class="container-fluid">
     <div class="row justify-content-end">
         <div class="decompteheure col-3">
-        <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
             <div id="totalOfHoursInYear" data-role="isNotAdmin">
                 <div class="h2 colorChange">
                     <h2>Total de l'année : <span class="hourHolder"></span> H</h2>
