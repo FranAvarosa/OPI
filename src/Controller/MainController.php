@@ -34,6 +34,11 @@ class MainController extends AbstractController
             } else {
                 $service2 = '';
             }
+            if(isset($service[2])){
+                $service3 = $service[2];
+            } else {
+                $service3 = '';
+            }
 
             $events = $calendar->findBy(['User' => $userId]);
 
@@ -44,6 +49,7 @@ class MainController extends AbstractController
                 'list' => $userRepository->findAll(),
                 'userService1' => $service1,
                 'userService2' => $service2,
+                'userService3' => $service3,
             ]);
         } else {
             return $this->render('security/restricted.html.twig');

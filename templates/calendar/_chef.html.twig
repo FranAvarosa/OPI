@@ -85,6 +85,15 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
+            <br/>
+            {% if userService3 is defined %}
+                <h3>{{ userService3 }}</h3>
+                {% for lists in list %}
+                    {% if lists.service[0] == userService3 and app.user.id != lists.id %}
+                        <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>
