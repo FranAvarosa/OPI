@@ -193,8 +193,8 @@
 
                     let newDiv = document.createElement("div");
                     newDiv.innerHTML =
-                        '<h3>' + hourInCurrentWeek.categoryName + ' : ' +
-                        parseFloat((hourInCurrentWeek.numberOfHours + hourInCurrentWeek.numberOfExtraHours).toFixed(1)) + ' H</h3>';
+                        '<div class="fontsize">' + hourInCurrentWeek.categoryName + ' : ' +
+                        parseFloat((hourInCurrentWeek.numberOfHours + hourInCurrentWeek.numberOfExtraHours).toFixed(1)) + ' H</div>';
 
                     document.getElementById('extraHourByCategoriesWeek').appendChild(newDiv);
                 }
@@ -215,8 +215,8 @@
 
                     let newDiv = document.createElement("div");
                     newDiv.innerHTML =
-                        '<h3>' + hourInCurrentMonth.categoryName + ' : ' +
-                        parseFloat((hourInCurrentMonth.numberOfHours + hourInCurrentMonth.numberOfExtraHours).toFixed(1)) + ' H</h3>';
+                        '<div class="fontsize">' + hourInCurrentMonth.categoryName + ' : ' +
+                        parseFloat((hourInCurrentMonth.numberOfHours + hourInCurrentMonth.numberOfExtraHours).toFixed(1)) + ' H</div>';
 
                     document.getElementById('extraHourByCategoriesMonth').appendChild(newDiv);
                 }
@@ -236,8 +236,8 @@
 
                     let newDiv = document.createElement("div");
                     newDiv.innerHTML =
-                        '<h3>' + hourInCurrentYear.categoryName + ' : ' +
-                        parseFloat((hourInCurrentYear.numberOfHours + hourInCurrentYear.numberOfExtraHours).toFixed(1)) + ' H</h3>';
+                        '<div class="fontsize">' + hourInCurrentYear.categoryName + ' : ' +
+                        parseFloat((hourInCurrentYear.numberOfHours + hourInCurrentYear.numberOfExtraHours).toFixed(1)) + ' H</div>';
 
                     document.getElementById('extraHourByCategoriesYear').appendChild(newDiv);
                 }

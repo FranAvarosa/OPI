@@ -17,7 +17,6 @@
         <div class="col-4">
             <div class="loggedUser">"Vous êtes connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}"  </div>
             <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a><br />
-            <a href="{{ path('main_chef', {'id': app.user.id}) }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/>
         </div>
     </div>
 </div>
@@ -41,7 +40,7 @@
                     Total du mois : <span class="hourHolder"></span>  H
                 </div>
                 <div class="h2">
-                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                    <h3>Soirs et week-end : <span class="extraHourHolder"></span> H</h3>
                 </div>
                 <div id="extraHourByCategoriesMonth">
                     <!-- generated loop of categories goes here -->
@@ -52,7 +51,7 @@
                     <h2>Total de la semaine : <span class="hourHolder"></span> H</h2>
                 </div>
                 <div class="h3">
-                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                    <h3>Soirs et week-end : <span class="extraHourHolder"></span> H</h3>
                 </div>
                 <div id="extraHourByCategoriesWeek">
                     <!-- generated loop of categories goes here -->
@@ -67,9 +66,10 @@
         <div id="calendrier" class="col-7">
         </div>
         <div class="col-2 listeemploye">
-            <h3> Liste des plannings </h3>
+            <h2 class="colorChange"> Liste des plannings </h2>
+            <a href="{{ path('main_chef', {'id': app.user.id}) }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/><br />
             {% if userService1 is defined %}
-                <h2>{{ userService1 }}</h2>
+                <h3>{{ userService1 }}</h3>
                 {% for lists in list %}
                     {% if lists.service[0] == userService1 and app.user.id != lists.id %}
                         <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
@@ -78,7 +78,7 @@
             {% endif %}
             <br/>
             {% if userService2 is defined %}
-                <h2>{{ userService2 }}</h2>
+                <h3>{{ userService2 }}</h3>
                 {% for lists in list %}
                     {% if lists.service[0] == userService2 and app.user.id != lists.id %}
                         <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>

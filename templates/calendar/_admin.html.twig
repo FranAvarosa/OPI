@@ -19,13 +19,6 @@
           <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
           <a href="{{ path('admin') }}" class="btn btn-primary" target="_blank">Espace Administrateur</a>
         </div>
-        {# <div class="col-4">
-            <div class="loggedUser">"Vous êtes connecté en tant que {{ app.user.prenom }} {{ app.user.nom }}"  </div>
-            <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
-            {% for lists in list %}
-                <a href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
-            {% endfor %}
-        </div> #}
     </div>
 </div>
 <br />
@@ -37,7 +30,7 @@
                     <h2>Total de l'année : <span class="hourHolder"></span> H</h2>
                 </div>
                 <div class="h2">
-                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                    <h3>Soirs et week-end : <span class="extraHourHolder"></span> H</h3>
                 </div>
                 <div id="extraHourByCategoriesYear">
                     <!-- generated loop of categories goes here -->
@@ -49,7 +42,7 @@
                     Total du mois : <span class="hourHolder"></span>  H
                 </div>
                 <div class="h2">
-                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                    <h3>Soirs et week-end : <span class="extraHourHolder"></span> H</h3>
                 </div>
                 <div id="extraHourByCategoriesMonth">
                     <!-- generated loop of categories goes here -->
@@ -60,7 +53,7 @@
                     <h2>Total de la semaine : <span class="hourHolder"></span> H</h2>
                 </div>
                 <div class="h3">
-                    <h2>Soirs et week-end : <span class="extraHourHolder"></span> H</h2>
+                    <h3>Soirs et week-end : <span class="extraHourHolder"></span> H</h3>
                 </div>
                 <div id="extraHourByCategoriesWeek">
                     <!-- generated loop of categories goes here -->
@@ -75,10 +68,15 @@
         <div id="calendrier" class="col-7">
         </div>
         <div class="col-2 listeemploye">
-            <h3> Liste des plannings </h3>
+            <h2 class="colorChange"> Liste des plannings </h2>
             <ul>
-            {% for lists in list %}
-                <li><a class="lienlisteemploye" href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
+{#                <a href="{{ path('main_chef', {'id': app.user.id}) }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/><br />#}
+            {% for lists in list|sort((a, b) => a.prenom <=> b.prenom) %}
+                {% if app.user.id == lists.id  %}
+                    <li><a href="{{ path('main_admin', {'id': app.user.id}) }}">{{ app.user.prenom }} {{ app.user.nom }}</a></li>
+                {% elseif app.user.id != lists.id %}
+                    <li><a class="lienlisteemploye" href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
+                {% endif %}
             {% endfor %}
             </ul>
         </div>
