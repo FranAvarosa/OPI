@@ -34,21 +34,23 @@ class CalendarController extends AbstractController
                 $dateString = $date1Ymd . ' ' . $date2His;
                 $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
 
-                // check if event total is more than 12h
-                // get current user events
-                $id = $this->getUser()->getId();
-                $allEvents = $calendarRepository->findBy(['User' => $id]);
-                $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
-
-                // show message if more than 12h for the day
-                if($sum > 12) {
-                    $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
-                }
-
                 // check if end is not before start
                 if ($dateEnd > $date1) {
                     $category = $calendar->getCategory();
                     $this->setBackgroundColors($category, $calendar);
+
+                    // check if event total is more than 12h
+                    // get current user events
+                    $id = $this->getUser()->getId();
+                    $allEvents = $calendarRepository->findBy(['User' => $id]);
+                    $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
+                    // show message if more than 12h for the day
+                    if($sum > 12) {
+                        $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
+                    }
+
+                    // check if event happens during another event
+
 
                     $calendar->setUser($this->getUser());
                     $calendar->setEnd($dateEnd);
@@ -113,22 +115,22 @@ class CalendarController extends AbstractController
                     $dateString = $date1Ymd . ' ' . $date2His;
                     $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
 
-                    // check if event total is more than 12h
-                    // get attached user events
-                    $allEvents = $calendarRepository->findBy(['User' => $attachedUserId]);
-                    $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
-
-                    // substracts edited event hour duration
-                    $sum -= (strtotime($oldEventEnd) - strtotime($oldEventStart)) / 3600;
-
-                    // show message if more than 12h for the day
-                    if($sum > 12) {
-                        $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
-                    }
-
                     if ($dateEnd > $date1) {
                         $category = $calendar->getCategory();
                         $this->setBackgroundColors($category, $calendar);
+
+                        // check if event total is more than 12h
+                        // get attached user events
+                        $allEvents = $calendarRepository->findBy(['User' => $attachedUserId]);
+                        $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
+
+                        // substracts edited event hour duration
+                        $sum -= (strtotime($oldEventEnd) - strtotime($oldEventStart)) / 3600;
+
+                        // show message if more than 12h for the day
+                        if($sum > 12) {
+                            $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
+                        }
 
                         $calendar->setEnd($dateEnd);
                         $entityManager->persist($calendar);
