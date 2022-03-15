@@ -41,22 +41,18 @@ class CalendarController extends AbstractController
                 $dateString = $date1Ymd . ' ' . $date2His;
                 $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
 
-                // check if end is not before start
+                // check if end is after start
                 if ($dateEnd > $date1) {
                     $calendar->setBackgroundColor($this->calendarColorService->color($calendar->getCategory()));
 
-                    // check if event total is more than 12h
                     // get current user events
                     $id = $this->getUser()->getId();
                     $allEvents = $calendarRepository->findBy(['User' => $id]);
-                    $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
+
                     // show message if more than 12h for the day
-                    if($sum > 12) {
-                        $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
-                    }
-
+                    $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
                     // check if event happens during another event
-
+                    $this->isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His);
 
                     $calendar->setUser($this->getUser());
                     $calendar->setEnd($dateEnd);
@@ -109,9 +105,6 @@ class CalendarController extends AbstractController
                 $form = $this->createForm(CalendarType::class, $calendar);
                 $form->handleRequest($request);
 
-                $oldEventStart = $calendar->getStart()->format('H:i:s');
-                $oldEventEnd = $calendar->getEnd()->format('H:i:s');
-
                 if ($form->isSubmitted() && $form->isValid()) {
                     // add start's day to end's time
                     $date1 = $calendar->getStart();
@@ -121,26 +114,21 @@ class CalendarController extends AbstractController
                     $dateString = $date1Ymd . ' ' . $date2His;
                     $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
 
+                    // check if end is after start
                     if ($dateEnd > $date1) {
-                        $category = $calendar->getCategory();
-                        $calendar->setBackgroundColor($this->calendarColorService->color($calendar->getCategory()));
-
-                        // check if event total is more than 12h
                         // get attached user events
                         $allEvents = $calendarRepository->findBy(['User' => $attachedUserId]);
-                        $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
 
-                        // substracts edited event hour duration
-                        $sum -= (strtotime($oldEventEnd) - strtotime($oldEventStart)) / 3600;
-
-                        // show message if more than 12h for the day
-                        if($sum > 12) {
-                            $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
-                        }
-
+                        // send edit
                         $calendar->setEnd($dateEnd);
+                        $calendar->setBackgroundColor($this->calendarColorService->color($calendar->getCategory()));
                         $entityManager->persist($calendar);
                         $entityManager->flush();
+
+                        // check if event total is more than 12h
+                        $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
+                        // check if event happens during another event
+                        $this->isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His);
                     } else {
                         $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant l\'heure de début !');
                         return $this->redirectToRoute('calendar_edit', ['id' => $calendar->getId()], Response::HTTP_SEE_OTHER);
@@ -195,7 +183,40 @@ class CalendarController extends AbstractController
         }
         // adds new event hour duration
         $sum += (strtotime($date2His) - strtotime($date1His)) / 3600;
+        // show message if more than 12h for the day
+        if($sum > 12) {
+            $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
+        }
 
-        return $sum;
+        return;
+    }
+
+    function isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His) {
+        // organize array values
+        $simulEventArray = [];
+        foreach($allEvents as $events) {
+            $simulEventArray[] = [
+                'start' => $events->getStart()->format('Y-m-d'),
+                'startHour' => $events->getStart()->format('H:i:s'),
+                'end' => $events->getEnd()->format('Y-m-d'),
+                'endHour' => $events->getEnd()->format('H:i:s'),
+            ];
+        }
+
+        for($j = 0; $j < count($simulEventArray); $j++) {
+            if($simulEventArray[$j]['start'] == $date1Ymd) {
+                if($simulEventArray[$j]['startHour'] > $date1His and $simulEventArray[$j]['startHour'] < $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                } else if($simulEventArray[$j]['endHour'] > $date1His and $simulEventArray[$j]['endHour'] < $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                } else if($simulEventArray[$j]['startHour'] > $date1His and $simulEventArray[$j]['endHour'] < $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                } else if($simulEventArray[$j]['startHour'] < $date1His and $simulEventArray[$j]['endHour'] > $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                }
+            }
+        }
+
+        return;
     }
 }
