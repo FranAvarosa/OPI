@@ -20,7 +20,7 @@ use function Symfony\Component\String\toString;
 class CalendarController extends AbstractController
 {
     #[Route('/new', name: 'calendar_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CalendarRepository $calendarRepository, UserRepository $user): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CalendarRepository $calendarRepository): Response
     {
         $securityContext = $this->container->get('security.authorization_checker');
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
@@ -38,32 +38,12 @@ class CalendarController extends AbstractController
                 $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
 
                 // check if event total is more than 12h
-                    // get current user events
+                // get current user events
                 $id = $this->getUser()->getId();
                 $allEvents = $calendarRepository->findBy(['User' => $id]);
+                $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
 
-                    // organize array values
-                $eventArray = [];
-                foreach($allEvents as $events) {
-                    $eventArray[] = [
-                        'start' => $events->getStart()->format('Y-m-d'),
-                        'startHour' => $events->getStart()->format('H:i:s'),
-                        'end' => $events->getEnd()->format('Y-m-d'),
-                        'endHour' => $events->getEnd()->format('H:i:s'),
-                    ];
-                }
-
-                    // sums all events hour durations for the day the event is created
-                $sum = 0;
-                for($i = 0; $i < count($eventArray); $i++) {
-                    if($eventArray[$i]['start'] == $date1Ymd) {
-                        $sum += (strtotime($eventArray[$i]['endHour']) - strtotime($eventArray[$i]['startHour'])) / 3600;
-                    }
-                }
-                    // adds new event hour duration
-                $sum += (strtotime($date2His) - strtotime($date1His)) / 3600;
-
-                    // show message if more than 12h for the day
+                // show message if more than 12h for the day
                 if($sum > 12) {
                     $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
                 }
@@ -78,7 +58,8 @@ class CalendarController extends AbstractController
                     $entityManager->persist($calendar);
                     $entityManager->flush();
                 } else {
-                    return $this->redirectToRoute('calendar_edit', [], Response::HTTP_SEE_OTHER);
+                    $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant l\'heure de début !');
+                    return $this->redirectToRoute('calendar_new', [], Response::HTTP_SEE_OTHER);
                 }
 
                 return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
@@ -137,27 +118,7 @@ class CalendarController extends AbstractController
                     // check if event total is more than 12h
                     // get attached user events
                     $allEvents = $calendarRepository->findBy(['User' => $attachedUserId]);
-
-                    // organize array values
-                    $eventArray = [];
-                    foreach($allEvents as $events) {
-                        $eventArray[] = [
-                            'start' => $events->getStart()->format('Y-m-d'),
-                            'startHour' => $events->getStart()->format('H:i:s'),
-                            'end' => $events->getEnd()->format('Y-m-d'),
-                            'endHour' => $events->getEnd()->format('H:i:s'),
-                        ];
-                    }
-
-                    // sums all events hour durations for the day the event is created
-                    $sum = 0;
-                    for($i = 0; $i < count($eventArray); $i++) {
-                        if($eventArray[$i]['start'] == $date1Ymd) {
-                            $sum += (strtotime($eventArray[$i]['endHour']) - strtotime($eventArray[$i]['startHour'])) / 3600;
-                        }
-                    }
-                    // adds new event hour duration
-                    $sum += (strtotime($date2His) - strtotime($date1His)) / 3600;
+                    $sum = $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
 
                     // substracts edited event hour duration
                     $sum -= (strtotime($oldEventEnd) - strtotime($oldEventStart)) / 3600;
@@ -175,7 +136,8 @@ class CalendarController extends AbstractController
                         $entityManager->persist($calendar);
                         $entityManager->flush();
                     } else {
-                        return $this->redirectToRoute('calendar_edit', [], Response::HTTP_SEE_OTHER);
+                        $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant l\'heure de début !');
+                        return $this->redirectToRoute('calendar_edit', ['id' => $calendar->getId()], Response::HTTP_SEE_OTHER);
                     }
 
                     return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
@@ -248,5 +210,30 @@ class CalendarController extends AbstractController
             default:
                 $calendar->setBackgroundColor("#CCCCFF");
         }
+    }
+
+    function isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His) {
+        // organize array values
+        $eventArray = [];
+        foreach($allEvents as $events) {
+            $eventArray[] = [
+                'start' => $events->getStart()->format('Y-m-d'),
+                'startHour' => $events->getStart()->format('H:i:s'),
+                'end' => $events->getEnd()->format('Y-m-d'),
+                'endHour' => $events->getEnd()->format('H:i:s'),
+            ];
+        }
+
+        // sums all events hour durations for the day the event is created
+        $sum = 0;
+        for($i = 0; $i < count($eventArray); $i++) {
+            if($eventArray[$i]['start'] == $date1Ymd) {
+                $sum += (strtotime($eventArray[$i]['endHour']) - strtotime($eventArray[$i]['startHour'])) / 3600;
+            }
+        }
+        // adds new event hour duration
+        $sum += (strtotime($date2His) - strtotime($date1His)) / 3600;
+
+        return $sum;
     }
 }
