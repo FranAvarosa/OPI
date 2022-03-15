@@ -27,7 +27,6 @@ class MainController extends AbstractController
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $userId = $this->getUser()->getId();
             $service = $this->getUser()->getService();
-
             $service1 = $service[0];
             if(isset($service[1])){
                 $service2 = $service[1];
@@ -100,12 +99,16 @@ class MainController extends AbstractController
         if($this->container->get('security.authorization_checker')->isGranted('ROLE_CHEFSERVICE')){
             $id = $_GET['id'];
             $service = $this->getUser()->getService();
-
             $service1 = $service[0];
             if(isset($service[1])){
                 $service2 = $service[1];
             } else {
                 $service2 = '';
+            }
+            if(isset($service[2])){
+                $service3 = $service[2];
+            } else {
+                $service3 = '';
             }
 
             // user url id to get a matching user and find its service
@@ -130,6 +133,7 @@ class MainController extends AbstractController
                     'calId' => $id,
                     'userService1' => $service1,
                     'userService2' => $service2,
+                    'userService3' => $service3,
                 ]);
             } else {
                 return $this->render('security/restricted.html.twig');
