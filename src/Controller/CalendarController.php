@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Calendar;
-
+use App\Controller\Service\CalendarColorService;
 use App\Form\CalendarType;
 use App\Repository\CalendarRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/calendar')]
 class CalendarController extends AbstractController
 {
+    private $calendarColorService;
+
+    public function __construct(CalendarColorService $calendarColorService)
+    {
+        $this->calendarColorService = $calendarColorService;
+    }
+
     #[Route('/new', name: 'calendar_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, CalendarRepository $calendarRepository): Response
     {
@@ -36,8 +43,7 @@ class CalendarController extends AbstractController
 
                 // check if end is not before start
                 if ($dateEnd > $date1) {
-                    $category = $calendar->getCategory();
-                    $this->setBackgroundColors($category, $calendar);
+                    $calendar->setBackgroundColor($this->calendarColorService->color($calendar->getCategory()));
 
                     // check if event total is more than 12h
                     // get current user events
@@ -117,7 +123,7 @@ class CalendarController extends AbstractController
 
                     if ($dateEnd > $date1) {
                         $category = $calendar->getCategory();
-                        $this->setBackgroundColors($category, $calendar);
+                        $calendar->setBackgroundColor($this->calendarColorService->color($calendar->getCategory()));
 
                         // check if event total is more than 12h
                         // get attached user events
@@ -166,52 +172,6 @@ class CalendarController extends AbstractController
 
         $this->addFlash('success', 'Evénement supprimé avec succès.');
         return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
-    }
-
-    function setBackgroundColors($category, $calendar){
-        switch ($category) {
-            case "En attente":
-                $calendar->setBackgroundColor('#CCCCFF');
-                break;
-            case "Arrêt Maladie":
-            case "Jour férié":
-            case "CT":
-            case "CA":
-            case "Absence":
-            case "Action Institution et partenariat":
-            case "Présence sociale":
-                $calendar->setBackgroundColor('#FFCCCC');
-                break;
-            case "DP":
-                $calendar->setBackgroundColor('#FF9900');
-                break;
-            case "TA COMPT":
-                $calendar->setBackgroundColor('#6666CC');
-                break;
-            case "AEP":
-                $calendar->setBackgroundColor('#9999FF');
-                break;
-            case "Evaluation":
-                $calendar->setBackgroundColor('#FF6666');
-                break;
-            case "Formation":
-                $calendar->setBackgroundColor('#33CCFF');
-                break;
-            case "Coordination et préparation":
-                $calendar->setBackgroundColor('#CC9933');
-                break;
-            case "Animation éducative et sociale":
-                $calendar->setBackgroundColor('#ECE9D8');
-                break;
-            case "Travail de rue":
-                $calendar->setBackgroundColor('#00CCCC');
-                break;
-            case "Présence sociale hors local":
-                $calendar->setBackgroundColor('#99CFD8');
-                break;
-            default:
-                $calendar->setBackgroundColor("#CCCCFF");
-        }
     }
 
     function isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His) {
