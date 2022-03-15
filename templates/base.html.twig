@@ -24,10 +24,13 @@
             <div class="header_top">
                 <img src="{{ asset('assets/images/logo.jpg') }}" alt="logo_ARSEA_OPI" class="header_image">
             </div>
-            <div class="navbar">
-            
-            </div>
+            <div class="navbar"></div>
         </header>
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning">
+                {{ message }}
+            </div>
+        {% endfor %}
         {% block body %}
         {% endblock %}
         {% block javascripts %}

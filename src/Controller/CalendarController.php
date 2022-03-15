@@ -65,7 +65,7 @@ class CalendarController extends AbstractController
 
                     // show message if more than 12h for the day
                 if($sum > 12) {
-                    echo "Attention, vous cumulez plus de 12 heures de travail aujourd'hui !";
+                    $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
                 }
 
                 // check if end is not before start
@@ -78,7 +78,7 @@ class CalendarController extends AbstractController
                     $entityManager->persist($calendar);
                     $entityManager->flush();
                 } else {
-                    return $this->redirectToRoute('404', [], Response::HTTP_SEE_OTHER);
+                    return $this->redirectToRoute('calendar_edit', [], Response::HTTP_SEE_OTHER);
                 }
 
                 return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
@@ -94,7 +94,7 @@ class CalendarController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'calendar_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Calendar $calendar, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Calendar $calendar, EntityManagerInterface $entityManager, CalendarRepository $calendarRepository): Response
     {
         // check if logged in
         $securityContext = $this->container->get('security.authorization_checker');
@@ -122,13 +122,50 @@ class CalendarController extends AbstractController
                 $form = $this->createForm(CalendarType::class, $calendar);
                 $form->handleRequest($request);
 
+                $oldEventStart = $calendar->getStart()->format('H:i:s');
+                $oldEventEnd = $calendar->getEnd()->format('H:i:s');
+
                 if ($form->isSubmitted() && $form->isValid()) {
                     // add start's day to end's time
                     $date1 = $calendar->getStart();
                     $date1Ymd = $calendar->getStart()->format('Y-m-d');
+                    $date1His = $calendar->getStart()->format('H:i:s');
                     $date2His = $calendar->getEnd()->format('H:i:s');
                     $dateString = $date1Ymd . ' ' . $date2His;
                     $dateEnd = date_create_from_format('Y-m-d H:i:s', $dateString);
+
+                    // check if event total is more than 12h
+                    // get attached user events
+                    $allEvents = $calendarRepository->findBy(['User' => $attachedUserId]);
+
+                    // organize array values
+                    $eventArray = [];
+                    foreach($allEvents as $events) {
+                        $eventArray[] = [
+                            'start' => $events->getStart()->format('Y-m-d'),
+                            'startHour' => $events->getStart()->format('H:i:s'),
+                            'end' => $events->getEnd()->format('Y-m-d'),
+                            'endHour' => $events->getEnd()->format('H:i:s'),
+                        ];
+                    }
+
+                    // sums all events hour durations for the day the event is created
+                    $sum = 0;
+                    for($i = 0; $i < count($eventArray); $i++) {
+                        if($eventArray[$i]['start'] == $date1Ymd) {
+                            $sum += (strtotime($eventArray[$i]['endHour']) - strtotime($eventArray[$i]['startHour'])) / 3600;
+                        }
+                    }
+                    // adds new event hour duration
+                    $sum += (strtotime($date2His) - strtotime($date1His)) / 3600;
+
+                    // substracts edited event hour duration
+                    $sum -= (strtotime($oldEventEnd) - strtotime($oldEventStart)) / 3600;
+
+                    // show message if more than 12h for the day
+                    if($sum > 12) {
+                        $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
+                    }
 
                     if ($dateEnd > $date1) {
                         $category = $calendar->getCategory();
