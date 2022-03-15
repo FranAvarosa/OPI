@@ -62,6 +62,7 @@ class CalendarController extends AbstractController
                     return $this->redirectToRoute('calendar_new', [], Response::HTTP_SEE_OTHER);
                 }
 
+                $this->addFlash('success', 'Evénement créé avec succès.');
                 return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
             }
 
@@ -140,6 +141,7 @@ class CalendarController extends AbstractController
                         return $this->redirectToRoute('calendar_edit', ['id' => $calendar->getId()], Response::HTTP_SEE_OTHER);
                     }
 
+                    $this->addFlash('success', 'Evénement édité avec succès.');
                     return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
                 }
             } else {
@@ -163,6 +165,7 @@ class CalendarController extends AbstractController
             $entityManager->flush();
         }
 
+        $this->addFlash('success', 'Evénement supprimé avec succès.');
         return $this->redirectToRoute('main', [], Response::HTTP_SEE_OTHER);
     }
 
