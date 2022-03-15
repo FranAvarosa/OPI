@@ -55,8 +55,10 @@ class CalendarController extends AbstractController
                     $this->isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His);
                     //check for pause
                     $postedEventDuration = (strtotime($date2His) - strtotime($date1His)) / 3600;
-                    if($postedEventDuration >= 6 and $postedEventDuration <= 7) {
-                        echo "salut";
+                    if($postedEventDuration >= 6 and $postedEventDuration < 7) {
+                        $this->addFlash('warning', 'Pensez à prendre une pause de 20 minutes après cet événement.');
+                    } elseif ($postedEventDuration >= 7) {
+                        $this->addFlash('warning', 'Pensez à prendre une pause de 30 minutes après cet événement.');
                     }
 
                     $calendar->setUser($this->getUser());
@@ -200,7 +202,7 @@ class CalendarController extends AbstractController
         $sum += (strtotime($date2His) - strtotime($date1His)) / 3600;
         // show message if more than 12h for the day
         if($sum > 12) {
-            $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail aujourd\'hui !');
+            $this->addFlash('warning', 'Attention, vous cumulez plus de 12 heures de travail ce jour-ci !');
         }
 
         return;
@@ -221,13 +223,13 @@ class CalendarController extends AbstractController
         for($j = 0; $j < count($simulEventArray); $j++) {
             if($simulEventArray[$j]['start'] == $date1Ymd) {
                 if($simulEventArray[$j]['startHour'] > $date1His && $simulEventArray[$j]['startHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.1');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
                 } else if($simulEventArray[$j]['endHour'] > $date1His && $simulEventArray[$j]['endHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.2');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
                 } else if($simulEventArray[$j]['startHour'] < $date1His && $simulEventArray[$j]['endHour'] > $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.3');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
                 }
             }
