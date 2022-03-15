@@ -3,18 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Calendar;
-use App\Entity\User;
+
 use App\Form\CalendarType;
 use App\Repository\CalendarRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function Symfony\Component\Mime\Header\getId;
-use function Symfony\Component\String\toString;
+
 
 #[Route('/calendar')]
 class CalendarController extends AbstractController
