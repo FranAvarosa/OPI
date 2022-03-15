@@ -53,6 +53,11 @@ class CalendarController extends AbstractController
                     $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
                     // check if event happens during another event
                     $this->isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His);
+                    //check for pause
+                    $postedEventDuration = (strtotime($date2His) - strtotime($date1His)) / 3600;
+                    if($postedEventDuration >= 6 and $postedEventDuration <= 7) {
+                        echo "salut";
+                    }
 
                     $calendar->setUser($this->getUser());
                     $calendar->setEnd($dateEnd);
@@ -91,6 +96,11 @@ class CalendarController extends AbstractController
             } else {
                 $service2 = '';
             }
+            if(isset($currentUserService[2])){
+                $service3 = $currentUserService[2];
+            } else {
+                $service3 = '';
+            }
 
             // get event infos
             $attachedUserId = $calendar->getUser()->getId();
@@ -101,7 +111,12 @@ class CalendarController extends AbstractController
             $roleCheckerAdmin = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
 
             // check if current user is allowed to edit
-            if ($roleCheckerAdmin or $currentUserId == $attachedUserId or $service1 == $attachedUserService and $roleCheckerChef or $service2 == $attachedUserService and $roleCheckerChef or $currentUserService == $attachedUserService and $roleCheckerChef) {
+            if ($roleCheckerAdmin or
+                $currentUserId == $attachedUserId or
+                $service1 == $attachedUserService and $roleCheckerChef or
+                $service2 == $attachedUserService and $roleCheckerChef or
+                $service3 == $attachedUserService and $roleCheckerChef or
+                $currentUserService == $attachedUserService and $roleCheckerChef) {
                 $form = $this->createForm(CalendarType::class, $calendar);
                 $form->handleRequest($request);
 
@@ -205,14 +220,15 @@ class CalendarController extends AbstractController
 
         for($j = 0; $j < count($simulEventArray); $j++) {
             if($simulEventArray[$j]['start'] == $date1Ymd) {
-                if($simulEventArray[$j]['startHour'] > $date1His and $simulEventArray[$j]['startHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
-                } else if($simulEventArray[$j]['endHour'] > $date1His and $simulEventArray[$j]['endHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
-                } else if($simulEventArray[$j]['startHour'] > $date1His and $simulEventArray[$j]['endHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
-                } else if($simulEventArray[$j]['startHour'] < $date1His and $simulEventArray[$j]['endHour'] > $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                if($simulEventArray[$j]['startHour'] > $date1His && $simulEventArray[$j]['startHour'] < $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.1');
+                    break;
+                } else if($simulEventArray[$j]['endHour'] > $date1His && $simulEventArray[$j]['endHour'] < $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.2');
+                    break;
+                } else if($simulEventArray[$j]['startHour'] < $date1His && $simulEventArray[$j]['endHour'] > $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.3');
+                    break;
                 }
             }
         }
