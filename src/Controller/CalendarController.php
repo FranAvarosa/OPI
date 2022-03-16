@@ -31,6 +31,7 @@ class CalendarController extends AbstractController
             $calendar = new Calendar();
             $form = $this->createForm(CalendarType::class, $calendar);
             $form->handleRequest($request);
+            $calId = 'null';
 
             if ($form->isSubmitted() && $form->isValid()) {
                 // add start's day to end's time
@@ -52,7 +53,7 @@ class CalendarController extends AbstractController
                     // show message if more than 12h for the day
                     $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
                     // check if event happens during another event
-                    $this->isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His);
+                    $this->isDuringAnotherEvent($allEvents, $calId, $date1Ymd, $date1His, $date2His);
                     //check for pause
                     $postedEventDuration = (strtotime($date2His) - strtotime($date1His)) / 3600;
                     if($postedEventDuration >= 6 and $postedEventDuration < 7) {
@@ -66,7 +67,7 @@ class CalendarController extends AbstractController
                     $entityManager->persist($calendar);
                     $entityManager->flush();
                 } else {
-                    $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant l\'heure de début !');
+                    $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant ou à l\'heure de début !');
                     return $this->redirectToRoute('calendar_new', [], Response::HTTP_SEE_OTHER);
                 }
 
@@ -121,6 +122,7 @@ class CalendarController extends AbstractController
                 $currentUserService == $attachedUserService and $roleCheckerChef) {
                 $form = $this->createForm(CalendarType::class, $calendar);
                 $form->handleRequest($request);
+                $calId = $calendar->getId();
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     // add start's day to end's time
@@ -145,9 +147,9 @@ class CalendarController extends AbstractController
                         // check if event total is more than 12h
                         $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
                         // check if event happens during another event
-                        $this->isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His);
+                        $this->isDuringAnotherEvent($allEvents, $calId, $date1Ymd, $date1His, $date2His);
                     } else {
-                        $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant l\'heure de début !');
+                        $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant ou à l\'heure de début !');
                         return $this->redirectToRoute('calendar_edit', ['id' => $calendar->getId()], Response::HTTP_SEE_OTHER);
                     }
 
@@ -208,11 +210,12 @@ class CalendarController extends AbstractController
         return;
     }
 
-    function isDuringAnotherEvent($allEvents, $date1Ymd, $date1His, $date2His) {
+    function isDuringAnotherEvent($allEvents, $calId, $date1Ymd, $date1His, $date2His) {
         // organize array values
         $simulEventArray = [];
         foreach($allEvents as $events) {
             $simulEventArray[] = [
+                'id' => $events->getId(),
                 'start' => $events->getStart()->format('Y-m-d'),
                 'startHour' => $events->getStart()->format('H:i:s'),
                 'end' => $events->getEnd()->format('Y-m-d'),
@@ -222,14 +225,22 @@ class CalendarController extends AbstractController
 
         for($j = 0; $j < count($simulEventArray); $j++) {
             if($simulEventArray[$j]['start'] == $date1Ymd) {
-                if($simulEventArray[$j]['startHour'] > $date1His && $simulEventArray[$j]['startHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['startHour'] > $date1His && $simulEventArray[$j]['startHour'] < $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.1');
                     break;
-                } else if($simulEventArray[$j]['endHour'] > $date1His && $simulEventArray[$j]['endHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['endHour'] > $date1His && $simulEventArray[$j]['endHour'] < $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.2');
                     break;
-                } else if($simulEventArray[$j]['startHour'] < $date1His && $simulEventArray[$j]['endHour'] > $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
+                } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['startHour'] < $date1His && $simulEventArray[$j]['endHour'] > $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.3');
+                    break;
+                } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['startHour'] == $date1His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.4');
+                    break;
+                } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['endHour'] == $date2His) {
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.5');
+                    break;
+                } else {
                     break;
                 }
             }
