@@ -55,12 +55,7 @@ class CalendarController extends AbstractController
                     // check if event happens during another event
                     $this->isDuringAnotherEvent($allEvents, $calId, $date1Ymd, $date1His, $date2His);
                     //check for pause
-                    $postedEventDuration = (strtotime($date2His) - strtotime($date1His)) / 3600;
-                    if($postedEventDuration >= 6 and $postedEventDuration < 7) {
-                        $this->addFlash('warning', 'Pensez à prendre une pause de 20 minutes après cet événement.');
-                    } elseif ($postedEventDuration >= 7) {
-                        $this->addFlash('warning', 'Pensez à prendre une pause de 30 minutes après cet événement.');
-                    }
+                    $this->takePause($allEvents, $calId, $date1Ymd, $date1His, $date2His);
 
                     $calendar->setUser($this->getUser());
                     $calendar->setEnd($dateEnd);
@@ -148,6 +143,8 @@ class CalendarController extends AbstractController
                         $this->isMoreThan12Hours($allEvents, $date1Ymd, $date2His, $date1His);
                         // check if event happens during another event
                         $this->isDuringAnotherEvent($allEvents, $calId, $date1Ymd, $date1His, $date2His);
+                        // check if have to take pause
+                        $this->takePause($allEvents, $calId, $date1Ymd, $date1His, $date2His);
                     } else {
                         $this->addFlash('warning', 'L\'heure de fin ne peut pas avoir lieu avant ou à l\'heure de début !');
                         return $this->redirectToRoute('calendar_edit', ['id' => $calendar->getId()], Response::HTTP_SEE_OTHER);
@@ -226,22 +223,131 @@ class CalendarController extends AbstractController
         for($j = 0; $j < count($simulEventArray); $j++) {
             if($simulEventArray[$j]['start'] == $date1Ymd) {
                 if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['startHour'] > $date1His && $simulEventArray[$j]['startHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.1');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
                 } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['endHour'] > $date1His && $simulEventArray[$j]['endHour'] < $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.2');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
                 } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['startHour'] < $date1His && $simulEventArray[$j]['endHour'] > $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.3');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
                 } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['startHour'] == $date1His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.4');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
                 } else if($simulEventArray[$j]['id'] != $calId && $simulEventArray[$j]['endHour'] == $date2His) {
-                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.5');
+                    $this->addFlash('danger', 'Attention, un autre événement se tient durant ce créneau horaire.');
                     break;
-                } else {
-                    break;
+                }
+            }
+        }
+
+        return;
+    }
+
+    function takePause($allEvents, $calId, $date1Ymd, $date1His, $date2His) {
+        // check if event is 6h+ or 7h+ already
+        $postedEventDuration = (strtotime($date2His) - strtotime($date1His)) / 3600;
+        if($postedEventDuration >= 6 and $postedEventDuration < 7) {
+            $this->addFlash('warning', 'Pensez à prendre une pause de 20 minutes durant ou après cet événement.');
+
+        } elseif ($postedEventDuration >= 7) {
+            $this->addFlash('warning', 'Pensez à prendre une pause de 30 minutes durant ou après cet événement.');
+        } else {
+            // organize array values
+            $pauseEventArray = [];
+            foreach($allEvents as $events) {
+                $pauseEventArray[] = [
+                    'id' => $events->getId(),
+                    'start' => $events->getStart()->format('Y-m-d'),
+                    'startHour' => $events->getStart()->format('H:i:s'),
+                    'startFull' => $events->getStart()->format('Y-m-d H:i:s'),
+                    'end' => $events->getEnd()->format('Y-m-d'),
+                    'endHour' => $events->getEnd()->format('H:i:s'),
+                    'endFull' => $events->getEnd()->format('Y-m-d H:i:s'),
+                ];
+            }
+
+            // get all starting hours fully
+            $arrayStartFull = [];
+            for($a = 0; $a < count($pauseEventArray); $a++) {
+                if($pauseEventArray[$a]['start'] == $date1Ymd) {
+                    ${'start' . $a} = $pauseEventArray[$a]['startFull'];
+                    $arrayStartFull[] = ${'start' . $a};
+                }
+            }
+
+            // get all ending hours fully
+            $arrayEndFull = [];
+            for($a = 0; $a < count($pauseEventArray); $a++) {
+                if($pauseEventArray[$a]['end'] == $date1Ymd) {
+                    ${'end' . $a} = $pauseEventArray[$a]['endFull'];
+                    $arrayEndFull[] = ${'end' . $a};
+                }
+            }
+
+            // get only matching starts and ends
+            $resultArrayStart = array_intersect($arrayStartFull, $arrayEndFull);
+            $arrayValuesStart = array_values($resultArrayStart);
+
+            $sum = 0;
+            // les start d'events qui match avec key de 0 à X
+            for($b = 0; $b < count($arrayValuesStart); $b++) {
+                // on check si une end correspond
+                for($c = 0; $c < count($arrayEndFull); $c++) {
+                    if ($arrayValuesStart[$b] == $arrayEndFull[$c]) {
+                        // si oui on recup sa clé
+                        $key = array_search($arrayEndFull[$c], $arrayEndFull);
+                        // on check la valeur attrib à cette meme clé pour get le start de l'event d'avant
+                        for($d = 0; $d < count($arrayStartFull); $d++) {
+                            if ($d == $key) {
+                                for($e = 0; $e < count($pauseEventArray); $e++) {
+                                    // si ce start est égal au start d'un des events, je prend sa durée
+                                    if($pauseEventArray[$e]['startFull'] == $arrayStartFull[$d]) {
+                                        $eventDuration1 = (strtotime($pauseEventArray[$e]['endHour']) - strtotime($pauseEventArray[$e]['startHour'])) / 3600;
+                                        $sum += $eventDuration1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // sums all glued events durations for start
+            for($g = 0; $g < count($arrayValuesStart); $g++) {
+                for($h = 0; $h < count($pauseEventArray); $h++) {
+                    if($pauseEventArray[$h]['startFull'] == $arrayValuesStart[$g]) {
+                        $eventDuration = (strtotime($pauseEventArray[$h]['endHour']) - strtotime($pauseEventArray[$h]['startHour'])) / 3600;
+                        $sum += $eventDuration;
+                    }
+                }
+            }
+
+            dd($sum);
+
+
+            for($k = 0; $k < count($pauseEventArray); $k++) {
+                if($pauseEventArray[$k]['start'] == $date1Ymd) {
+                    $eventDuration = (strtotime($pauseEventArray[$k]['endHour']) - strtotime($pauseEventArray[$k]['startHour'])) / 3600;
+                    $sum = $eventDuration + $postedEventDuration;
+
+                    if($pauseEventArray[$k]['endHour'] == $date1His) {
+                        if($sum >= 6 && $sum < 7) {
+                            $this->addFlash('warning', 'Pensez à prendre une pause de 20 minutes durant ou après cet événement.1');
+                            break;
+                        } elseif($sum >= 7) {
+                            $this->addFlash('warning', 'Pensez à prendre une pause de 30 minutes durant ou après cet événement.2');
+                            break;
+                        }
+                    } else if($pauseEventArray[$k]['startHour'] == $date2His) {
+                        if($sum >= 6 && $sum < 7) {
+                            $this->addFlash('warning', 'Pensez à prendre une pause de 20 minutes durant ou après cet événement.11');
+                            break;
+                        } elseif($sum >= 7) {
+                            $this->addFlash('warning', 'Pensez à prendre une pause de 30 minutes durant ou après cet événement.22');
+                            break;
+                        }
+                    }
                 }
             }
         }
