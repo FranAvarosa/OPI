@@ -330,7 +330,7 @@ class CalendarController extends AbstractController
                         $eventDuration = (strtotime($pauseEventArrayGetStart['endFull']) - strtotime($pauseEventArrayGetStart['startFull'])) / 3600;
                         $sum += $eventDuration;
                         $reinit = $pauseEventArrayGetStart['endFull'];
-                        $matchingStartEqualsEnd = in_array($reinit, $arrayStartFull);
+                        $matchingEndEqualsStart = in_array($reinit, $arrayStartFull);
                     }
                 }
 
@@ -340,8 +340,8 @@ class CalendarController extends AbstractController
                         $eventDuration = (strtotime($pauseEventArray[$m]['endFull']) - strtotime($pauseEventArray[$m]['startFull'])) / 3600;
                         $sum += $eventDuration;
                         $reinit = $pauseEventArray[$m]['endFull'];
-                        $matchingStartEqualsEnd = in_array($reinit, $arrayStartFull);
-                        if ($matchingStartEqualsEnd == true) {
+                        $matchingEndEqualsStart = in_array($reinit, $arrayStartFull);
+                        if ($matchingEndEqualsStart == true) {
                             $m = 0;
                         }
                     }
