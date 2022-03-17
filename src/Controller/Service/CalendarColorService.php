@@ -8,7 +8,7 @@ class CalendarColorService
     {
         switch ($category) {
             case 'En attente':
-                $color = '#CCCCFF';
+                $color = '#666666';
                 break;
             case 'Arrêt Maladie':
             case 'Jour férié':
@@ -17,37 +17,37 @@ class CalendarColorService
             case 'Absence':
             case 'Action Institution et partenariat':
             case 'Présence sociale':
-                $color = '#FFCCCC';
+                $color = '#ff6666';
                 break;
             case 'DP':
-                $color = '#FF9900';
+                $color = '#b36b00';
                 break;
             case 'TA COMPT':
-                $color = '#6666CC';
+                $color = '#4040bf';
                 break;
             case 'AEP':
-                $color = '#9999FF';
+                $color = '#8080ff';
                 break;
             case 'Evaluation':
-                $color = '#FF6666';
+                $color = '#ff3333';
                 break;
             case 'Formation':
-                $color = '#33CCFF';
+                $color = '#0099cc';
                 break;
             case 'Coordination et préparation':
-                $color = '#CC9933';
+                $color = '#b88a2e';
                 break;
             case 'Animation éducative et sociale':
-                $color = '#ECE9D8';
+                $color = '#ab9f54';
                 break;
             case 'Travail de rue':
-                $color = '#00CCCC';
+                $color = '#008080';
                 break;
             case 'Présence sociale hors local':
-                $color = '#99CFD8';
+                $color = '#46a8b9';
                 break;
             default:
-                $color = '#CCCCFF';
+                $color = '#666666';
         }
 
         return $color;
