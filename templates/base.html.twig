@@ -11,6 +11,7 @@
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js" integrity="sha256-YicH/8aE660iEnJtgll3vT54dJApy3XkYmqNfGVFEzA=" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css" integrity="sha256-5veQuRbWaECuYxwap/IOE/DAwNxgm4ikX7nrgsqYp88=" crossorigin="anonymous">
@@ -27,7 +28,7 @@
             <div class="navbar"></div>
         </header>
         {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
+            <div class="alert alert-success" id="success-alert">
                 {{ message }}
             </div>
         {% endfor %}
@@ -47,4 +48,12 @@
         {% block javascripts %}
         {% endblock %}
     </body>
+
+    <script>
+        $(document).ready(function() {
+            $("#success-alert").fadeTo(3000, 500).slideUp(500, function() {
+                $("#success-alert").slideUp(500);
+            });
+        });
+    </script>
 </html>

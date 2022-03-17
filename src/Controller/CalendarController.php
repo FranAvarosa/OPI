@@ -271,20 +271,18 @@ class CalendarController extends AbstractController
 
             // get all starting hours in Y-m-d H:i:s
             $arrayStartFull = [];
+            // get all ending hours in Y-m-d H:i:s
+            $arrayEndFull = [];
             for($a = 0; $a < count($pauseEventArray); $a++) {
                 if($pauseEventArray[$a]['start'] == $date1Ymd) {
                     $arrayStartFull[] = $pauseEventArray[$a]['startFull'];
                 }
-            }
-
-            // get all ending hours in Y-m-d H:i:s
-            $arrayEndFull = [];
-            for($a = 0; $a < count($pauseEventArray); $a++) {
                 if($pauseEventArray[$a]['end'] == $date1Ymd) {
                     $arrayEndFull[] = $pauseEventArray[$a]['endFull'];
                 }
             }
 
+            // end date of posted event
             $date2YmdHis = $dateEnd->format('Y-m-d H:i:s');
 
             // checks if posted event start matches one event end

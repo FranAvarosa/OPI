@@ -36,8 +36,8 @@
                     <!-- generated loop of categories goes here -->
                 </div>
             </div>
-            <br />
             <div id="totalOfHoursInMonth">
+                <br />
                 <div class="h2 colorChange">
                     Total du mois : <span class="hourHolder"></span>  H
                 </div>
@@ -72,7 +72,7 @@
             <ul>
             {% for lists in list|sort((a, b) => a.prenom <=> b.prenom) %}
                 {% if app.user.id == lists.id  %}
-                    <li><a href="{{ path('main') }}">{{ app.user.prenom }} {{ app.user.nom }}</a></li>
+                    <li><a class="lienlisteemploye lienlisteemployeself" href="{{ path('main') }}">{{ app.user.prenom }} {{ app.user.nom }}</a></li>
                 {% elseif app.user.id != lists.id %}
                     <li><a class="lienlisteemploye" href="{{ path('main_admin', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
                 {% endif %}

@@ -67,12 +67,12 @@
         </div>
         <div class="col-2 listeemploye">
             <h2 class="colorChange"> Liste des plannings </h2>
-            <a href="{{ path('main') }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/><br />
+            <a class="lienlisteemploye lienlisteemployeself" href="{{ path('main') }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/><br />
             {% if userService1 is defined %}
                 <h3>{{ userService1 }}</h3>
                 {% for lists in list %}
                     {% if lists.service[0] == userService1 and app.user.id != lists.id %}
-                        <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                        <a class="lienlisteemploye" href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
                     {% endif %}
                 {% endfor %}
             {% endif %}
@@ -81,7 +81,7 @@
                 <h3>{{ userService2 }}</h3>
                 {% for lists in list %}
                     {% if lists.service[0] == userService2 and app.user.id != lists.id %}
-                        <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                        <a class="lienlisteemploye" href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
                     {% endif %}
                 {% endfor %}
             {% endif %}
