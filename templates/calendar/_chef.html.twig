@@ -70,29 +70,35 @@
             <a class="lienlisteemploye lienlisteemployeself" href="{{ path('main') }}">{{ app.user.prenom }} {{ app.user.nom }}</a><br/><br />
             {% if userService1 is defined %}
                 <h3>{{ userService1 }}</h3>
+                <ul>
                 {% for lists in list %}
                     {% if lists.service[0] == userService1 and app.user.id != lists.id %}
-                        <a class="lienlisteemploye" href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                        <li><a class="lienlisteemploye" href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
                     {% endif %}
                 {% endfor %}
+                </ul>
             {% endif %}
             <br/>
             {% if userService2 is defined %}
                 <h3>{{ userService2 }}</h3>
+                <ul>
                 {% for lists in list %}
                     {% if lists.service[0] == userService2 and app.user.id != lists.id %}
-                        <a class="lienlisteemploye" href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                        <li><a class="lienlisteemploye" href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
                     {% endif %}
                 {% endfor %}
+                </ul>
             {% endif %}
             <br/>
             {% if userService3 is defined %}
                 <h3>{{ userService3 }}</h3>
+                <ul>
                 {% for lists in list %}
                     {% if lists.service[0] == userService3 and app.user.id != lists.id %}
-                        <a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a><br/>
+                        <li><a href="{{ path('main_chef', {'id': lists.id}) }}">{{ lists.prenom }} {{ lists.nom }}</a></li>
                     {% endif %}
                 {% endfor %}
+                </ul>
             {% endif %}
         </div>
     </div>
