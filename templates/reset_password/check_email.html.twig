@@ -3,8 +3,17 @@
 {% block title %}Email de changement de mot de passe envoyé{% endblock %}
 
 {% block body %}
-    <p>
-        Si un compte utilisateur correspondant à votre adresse email existe, un email lui sera envoyé. Il contient un lien cliquable pour réinitialiser votre mot de passe. Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>Si vous ne recevez aucun email, veuillez vérifier dans vos spams ou <a href="{{ path('app_forgot_password_request') }}">essayez à nouveau</a>.</p>
+    <div class="container-fluid">
+        <div class="loggedcontainer">
+            <p>
+                Si un compte utilisateur correspondant à votre adresse email existe, un email lui sera envoyé. Il contient un lien cliquable pour réinitialiser votre mot de passe. Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+            </p>
+            <p>Si vous ne recevez aucun email, veuillez vérifier dans vos spams ou <a href="{{ path('app_forgot_password_request') }}">essayez à nouveau</a>.</p>
+        </div>
+        <div class="row justify-content-center text-center">
+            <div class="col-offset-4 col-4">
+                <a class="btn btn-danger" href="{{ path('app_login') }}">Retour à la connexion</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
