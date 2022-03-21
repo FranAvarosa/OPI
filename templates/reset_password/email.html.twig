@@ -1,0 +1,12 @@
+<div class="header_top">
+    <img src="https://www.arsea.fr/wp-content/themes/arsea/img/backend/logo-arsea.png" alt="logo_ARSEA_OPI" class="header_image">
+</div>
+<h1>Bonjour</h1>
+
+<p> Vous avez effectué une demande de changement de mot de passe concernant votre planning Arsea. Cliquez sur le lien suivant pour le modifier :</p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+<p>Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<p>Bonne journée.</p>
